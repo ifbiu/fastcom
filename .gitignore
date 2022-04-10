@@ -1,2 +1,5 @@
 .idea
 conf/app.conf
+
+.user.ini
+.htaccess
