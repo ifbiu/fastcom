@@ -10,11 +10,11 @@ type LoginController struct {
 }
 
 
-func (ctx *LoginController) Get()  {
+func (this *LoginController) Get()  {
 	result := utils.ResultUtil{
 		Code: 200,
 		Msg: "登录成功",
 	}
-	ctx.Data["json"] = &result
-	ctx.ServeJSON()
+	this.Data["json"] = &result
+	this.ServeJSON()
 }

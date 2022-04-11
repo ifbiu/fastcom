@@ -30,11 +30,11 @@ type GetJsCodeErr struct {
 	ErrMsg string `json:"errmsg"`
 }
 
-func (ctx *GetOpenIdController) Get(){
-	jscode := ctx.GetString("jscode")
+func (this *GetOpenIdController) Get(){
+	jscode := this.GetString("jscode")
 	if jscode == "" {
-		ctx.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少jscode字段"}
-		ctx.ServeJSON()
+		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少jscode字段"}
+		this.ServeJSON()
 	}
 	APPID := "wx729d7fc79ac8c86f"
 	SECRET := "48231588a3adeb2adeb07cf70e4db02a"
@@ -50,13 +50,13 @@ func (ctx *GetOpenIdController) Get(){
 			SessionKey: getJsCode.SessionKey,
 			Unionid: getJsCode.Unionid,
 		}
-		ctx.Data["json"] = getJsCodeSuccess
+		this.Data["json"] = getJsCodeSuccess
 	}else{
 		getJsCodeErr := GetJsCodeErr{
 			ErrCode: getJsCode.ErrCode,
 			ErrMsg: getJsCode.ErrMsg,
 		}
-		ctx.Data["json"] = getJsCodeErr
+		this.Data["json"] = getJsCodeErr
 	}
-	ctx.ServeJSON()
+	this.ServeJSON()
 }

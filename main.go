@@ -1,8 +1,8 @@
 package main
 
 import (
+	_ "fastcom/db"
 	_ "fastcom/routers"
-	_ "fastcom/models"
 	"github.com/astaxie/beego"
 )
 
