@@ -77,9 +77,16 @@ func (this *RegisterUserController)Post()  {
 		Image: image,
 		Sex: sex,
 	}
-	status,err := register.AddUserInfo(&user)
+	isExist,status,err := register.AddUserInfo(&user)
 	if err != nil {
 		log.Panicln(err)
+	}
+	if !isExist {
+		this.Data["json"] = utils.ResultUtil{
+			Code: 500,
+			Msg: "注册失败，用户已存在",
+		}
+		this.ServeJSON()
 	}
 	if !status {
 		this.Data["json"] = utils.ResultUtil{
