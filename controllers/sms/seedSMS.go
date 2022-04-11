@@ -26,23 +26,12 @@ func (this *SeedSMSController)Get()  {
 	if err != nil {
 		log.Panicln(err)
 	}
-	smsExists,err := rds.Exists(key)
-	if err != nil {
-		log.Panicln(err)
-	}
-	if (!smsExists){
-		code := generateCode()
-		utils.SeedSMS(phone,code)
-		rds.Set(key,code,time.Minute*10)
-		this.Data["json"] = utils.ResultUtil{
-			Code: 200,
-			Msg: "短信已成功发送，注意查收",
-		}
-		this.ServeJSON()
-	}
+	code := generateCode()
+	utils.SeedSMS(phone,code)
+	rds.Set(key,code,time.Minute*10)
 	this.Data["json"] = utils.ResultUtil{
 		Code: 200,
-		Msg: "上次获取的验证码还可以使用",
+		Msg: "短信已成功发送，注意查收",
 	}
 	this.ServeJSON()
 }
