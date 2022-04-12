@@ -29,7 +29,7 @@ func (this *IsRegisterUserController) Get()  {
 	if !isExist {
 		this.Data["json"] = utils.ResultUtil{
 			Code: 500,
-			Msg: "注册失败，用户已存在",
+			Msg: "用户已存在",
 		}
 		this.ServeJSON()
 	}
