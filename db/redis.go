@@ -3,6 +3,7 @@ package db
 import (
 	"github.com/astaxie/beego"
 	"github.com/go-redis/redis"
+	"log"
 	"time"
 )
 
@@ -13,6 +14,18 @@ type RedisClient struct {
 }
 
 var redisClient *RedisClient
+
+func init() {
+	rds, err := InitRedis()
+	if err != nil {
+		log.Panicln("redis connect failed !!!")
+	}
+	err = rds.Close()
+	if err != nil {
+		log.Panicln("redis connect failed !!!")
+	}
+	log.Println("redis connect success...")
+}
 
 func InitRedis() (*RedisClient,error) {
 	opts := redis.Options{

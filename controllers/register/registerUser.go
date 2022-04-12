@@ -24,10 +24,15 @@ type RequestUser struct {
 }
 
 func (this *RegisterUserController)Post()  {
-	u := &RequestUser{}
-	json.Unmarshal(this.Ctx.Input.RequestBody, u)
-	key := "sms:"+u.Phone
-	if u.OpenId=="" || u.Phone=="" || u.Image=="" || u.Sex == 0 || u.NickName == "" || u.Code == "" {
+	userParam := &RequestUser{}
+	json.Unmarshal(this.Ctx.Input.RequestBody, userParam)
+	key := "sms:"+userParam.Phone
+	if userParam.OpenId=="" ||
+		userParam.Phone=="" ||
+		userParam.Image=="" ||
+		userParam.Sex == 0 ||
+		userParam.NickName == "" ||
+		userParam.Code == "" {
 		var (
 			isOpenid string = ""
 			isPhone string = ""
@@ -36,22 +41,22 @@ func (this *RegisterUserController)Post()  {
 			isNickname string = ""
 			isCode string = ""
 		)
-		if u.OpenId=="" {
+		if userParam.OpenId=="" {
 			isOpenid = "openid "
 		}
-		if u.Phone=="" {
+		if userParam.Phone=="" {
 			isPhone = "phone "
 		}
-		if u.Image=="" {
+		if userParam.Image=="" {
 			isImage = "image "
 		}
-		if u.Sex==0 {
+		if userParam.Sex==0 {
 			isSex = "sex "
 		}
-		if u.NickName=="" {
+		if userParam.NickName=="" {
 			isNickname = "nickname "
 		}
-		if u.Code=="" {
+		if userParam.Code=="" {
 			isCode = "code "
 		}
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少必传参数："+isOpenid+isPhone+isImage+isSex+isNickname+isCode,
@@ -75,7 +80,7 @@ func (this *RegisterUserController)Post()  {
 		this.ServeJSON()
 	}
 	resCode, err := rds.Get(key)
-	if resCode != u.Code {
+	if resCode != userParam.Code {
 		this.Data["json"] = utils.ResultUtil{
 			Code: 500,
 			Msg: "验证码错误",
@@ -83,11 +88,11 @@ func (this *RegisterUserController)Post()  {
 		this.ServeJSON()
 	}
 	user := models.User{
-		OpenId: u.OpenId,
-		Phone: u.Phone,
-		Image: u.Image,
-		Sex: u.Sex,
-		NickName: u.NickName,
+		OpenId: userParam.OpenId,
+		Phone: userParam.Phone,
+		Image: userParam.Image,
+		Sex: userParam.Sex,
+		NickName: userParam.NickName,
 	}
 	isExist,status,err := register.AddUserInfo(&user)
 	if err != nil {
