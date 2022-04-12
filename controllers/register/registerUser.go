@@ -1,28 +1,35 @@
 package register
 
 import (
+	"encoding/json"
 	"fastcom/db"
 	"fastcom/logic/register"
 	"fastcom/models"
 	"fastcom/utils"
+	"fmt"
 	"github.com/astaxie/beego"
 	"log"
-	"strconv"
 )
 
 type RegisterUserController struct {
 	beego.Controller
 }
 
+type RequestUser struct {
+	OpenId string `json:"openid"`
+	Phone string `json:"phone"`
+	Image string `json:"image"`
+	Sex int `json:"sex"`
+	NickName string `json:"nickName"`
+	Code string `json:"code"`
+}
+
 func (this *RegisterUserController)Post()  {
-	openid := this.GetString("openid")
-	phone := this.GetString("phone")
-	image := this.GetString("image")
-	sex, _ := strconv.Atoi(this.GetString("sex"))
-	nickname := this.GetString("nickName")
-	code := this.GetString("code")
-	key := "sms:"+phone
-	if openid=="" || phone=="" || image=="" || sex == 0 || nickname == "" || code == "" {
+	u := &RequestUser{}
+	json.Unmarshal(this.Ctx.Input.RequestBody, u)
+	fmt.Println(u)
+	key := "sms:"+u.Phone
+	if u.OpenId=="" || u.Phone=="" || u.Image=="" || u.Sex == 0 || u.NickName == "" || u.Code == "" {
 		var (
 			isOpenid string = ""
 			isPhone string = ""
@@ -31,22 +38,22 @@ func (this *RegisterUserController)Post()  {
 			isNickname string = ""
 			isCode string = ""
 		)
-		if openid=="" {
+		if u.OpenId=="" {
 			isOpenid = "openid "
 		}
-		if phone=="" {
+		if u.Phone=="" {
 			isPhone = "phone "
 		}
-		if image=="" {
+		if u.Image=="" {
 			isImage = "image "
 		}
-		if sex==0 {
+		if u.Sex==0 {
 			isSex = "sex "
 		}
-		if nickname=="" {
+		if u.NickName=="" {
 			isNickname = "nickname "
 		}
-		if code=="" {
+		if u.Code=="" {
 			isCode = "code "
 		}
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少必传参数："+isOpenid+isPhone+isImage+isSex+isNickname+isCode,
@@ -70,7 +77,7 @@ func (this *RegisterUserController)Post()  {
 		this.ServeJSON()
 	}
 	resCode, err := rds.Get(key)
-	if resCode != code {
+	if resCode != u.Code {
 		this.Data["json"] = utils.ResultUtil{
 			Code: 500,
 			Msg: "验证码错误",
@@ -78,11 +85,11 @@ func (this *RegisterUserController)Post()  {
 		this.ServeJSON()
 	}
 	user := models.User{
-		OpenId: openid,
-		Phone: phone,
-		Image: image,
-		Sex: sex,
-		NickName: nickname,
+		OpenId: u.OpenId,
+		Phone: u.Phone,
+		Image: u.Image,
+		Sex: u.Sex,
+		NickName: u.NickName,
 	}
 	isExist,status,err := register.AddUserInfo(&user)
 	if err != nil {
