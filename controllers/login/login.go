@@ -34,7 +34,7 @@ func (this *LoginController) Post()  {
 	if err != nil {
 		log.Panicln(err)
 	}
-	err = rds.Set(key, "login success", time.Hour*24)
+	err = rds.Set(key, "login success", time.Hour)
 	if err != nil {
 		result := utils.ResultUtil{
 			Code: 200,
