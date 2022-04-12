@@ -7,6 +7,7 @@ import (
 	"fastcom/utils"
 	"github.com/astaxie/beego"
 	"log"
+	"strconv"
 )
 
 type RegisterUserController struct {
@@ -17,33 +18,38 @@ func (this *RegisterUserController)Post()  {
 	openid := this.GetString("openid")
 	phone := this.GetString("phone")
 	image := this.GetString("image")
-	sex := this.GetString("sex")
+	sex, _ := strconv.Atoi(this.GetString("sex"))
+	nickname := this.GetString("nickName")
 	code := this.GetString("code")
 	key := "sms:"+phone
-	if openid=="" || phone=="" || image=="" || sex == "" || code == "" {
+	if openid=="" || phone=="" || image=="" || sex == 0 || nickname == "" || code == "" {
 		var (
-			isopenid string = ""
-			isphone string = ""
-			isimage string = ""
-			issex string = ""
-			iscode string = ""
+			isOpenid string = ""
+			isPhone string = ""
+			isImage string = ""
+			isSex string = ""
+			isNickname string = ""
+			isCode string = ""
 		)
 		if openid=="" {
-			isopenid = "openid "
+			isOpenid = "openid "
 		}
 		if phone=="" {
-			isphone = "phone "
+			isPhone = "phone "
 		}
 		if image=="" {
-			isimage = "image "
+			isImage = "image "
 		}
-		if sex=="" {
-			issex = "sex "
+		if sex==0 {
+			isSex = "sex "
+		}
+		if nickname=="" {
+			isNickname = "nickname "
 		}
 		if code=="" {
-			iscode = "code "
+			isCode = "code "
 		}
-		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少必传参数："+isopenid+isphone+isimage+issex+iscode,
+		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少必传参数："+isOpenid+isPhone+isImage+isSex+isNickname+isCode,
 		}
 		this.ServeJSON()
 	}
@@ -76,6 +82,7 @@ func (this *RegisterUserController)Post()  {
 		Phone: phone,
 		Image: image,
 		Sex: sex,
+		NickName: nickname,
 	}
 	isExist,status,err := register.AddUserInfo(&user)
 	if err != nil {

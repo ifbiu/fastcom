@@ -5,5 +5,6 @@ type User struct {
 	OpenId string `json:"openid" orm:"openid"`
 	Phone string `json:"phone" orm:"phone"`
 	Image string `json:"image" orm:"image"`
-	Sex string `json:"sex" orm:"sex"`
+	Sex int `json:"sex" orm:"sex"`
+	NickName string `json:"nickName" orm:"nickname"`
 }

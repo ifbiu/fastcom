@@ -18,7 +18,8 @@ func AddUserInfo(user *models.User) (bool,bool,error) {
 	if len(users) > 0 {
 		return false,true, nil
 	}
-	r,err := o.Raw("INSERT INTO user(openid, phone, image, sex) values (?,?,?,?)", user.OpenId, user.Phone,user.Image,user.Sex).Exec()
+	fmt.Println(user)
+	r,err := o.Raw("INSERT INTO user(openid, phone, image, sex, nickname) values (?,?,?,?,?)", user.OpenId, user.Phone,user.Image,user.Sex,user.NickName).Exec()
 	fmt.Println(r.LastInsertId())
 	if err != nil {
 		return true,false, err
