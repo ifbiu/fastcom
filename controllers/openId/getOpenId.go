@@ -38,9 +38,8 @@ func (this *GetOpenIdController) Get(){
 	}
 	APPID := "wx729d7fc79ac8c86f"
 	SECRET := "48231588a3adeb2adeb07cf70e4db02a"
-	JSCODE := jscode
 	getJsCode := GetJsCode{}
-	err :=httplib.Get("https://api.weixin.qq.com/sns/jscode2session?appid="+APPID+"&secret="+SECRET+"&js_code="+JSCODE+"&grant_type=authorization_code").ToJSON(&getJsCode)
+	err :=httplib.Get("https://api.weixin.qq.com/sns/jscode2session?appid="+APPID+"&secret="+SECRET+"&js_code="+jscode+"&grant_type=authorization_code").ToJSON(&getJsCode)
 	if err!=nil {
 		log.Panicln(err)
 	}
