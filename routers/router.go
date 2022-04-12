@@ -14,5 +14,6 @@ func init() {
     beego.Router("/login", &login.LoginController{})
     beego.Router("/getOpenId", &openId.GetOpenIdController{})
     beego.Router("/register", &register.RegisterUserController{})
+    beego.Router("/isRegister", &register.IsRegisterUserController{})
     beego.Router("/seedPhoneCode", &sms.SeedSMSController{})
 }
