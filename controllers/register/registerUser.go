@@ -6,7 +6,6 @@ import (
 	"fastcom/logic/register"
 	"fastcom/models"
 	"fastcom/utils"
-	"fmt"
 	"github.com/astaxie/beego"
 	"log"
 )
@@ -27,7 +26,6 @@ type RequestUser struct {
 func (this *RegisterUserController)Post()  {
 	u := &RequestUser{}
 	json.Unmarshal(this.Ctx.Input.RequestBody, u)
-	fmt.Println(u)
 	key := "sms:"+u.Phone
 	if u.OpenId=="" || u.Phone=="" || u.Image=="" || u.Sex == 0 || u.NickName == "" || u.Code == "" {
 		var (
