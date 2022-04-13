@@ -73,3 +73,13 @@ func (this *RedisClient) Close() error {
 	return this.c.Close()
 }
 
+// Del删除key方法封装
+func (this *RedisClient) Del(key string)(bool, error) {
+	v, err := this.c.Del(key).Result()
+	if err != nil {
+		return false, err
+	}
+	return v > 0, nil
+}
+
+
