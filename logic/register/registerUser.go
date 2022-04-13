@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	"log"
+	"time"
 )
 
 
 func AddUserInfo(user *models.User) (bool,bool,error) {
 	o := orm.NewOrm()
 	var users []models.User
+	now := time.Now().Format("2006-01-02 15:04:05")
 	_,err := o.Raw("SELECT id FROM user WHERE openid =?", user.OpenId).QueryRows(&users)
 	if err != nil {
 		return true,false, err
@@ -18,7 +20,7 @@ func AddUserInfo(user *models.User) (bool,bool,error) {
 	if len(users) > 0 {
 		return false,true, nil
 	}
-	r,err := o.Raw("INSERT INTO user(openid, phone, image, sex, nickname) values (?,?,?,?,?)", user.OpenId, user.Phone,user.Image,user.Sex,user.NickName).Exec()
+	r,err := o.Raw("INSERT INTO user(openid, phone, image, sex, nickname, createtime) values (?,?,?,?,?,?)", user.OpenId, user.Phone,user.Image,user.Sex,user.NickName,now).Exec()
 	fmt.Println(r.LastInsertId())
 	if err != nil {
 		return true,false, err
