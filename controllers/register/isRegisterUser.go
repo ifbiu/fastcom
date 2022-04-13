@@ -32,10 +32,12 @@ func (this *IsRegisterUserController) Get()  {
 			Msg: "用户已存在",
 		}
 		this.ServeJSON()
+		return
 	}
 	this.Data["json"] = utils.ResultUtil{
 		Code: 200,
 		Msg: "可以注册",
 	}
 	this.ServeJSON()
+	return
 }

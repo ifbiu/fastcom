@@ -42,6 +42,7 @@ func (this *LoginController) Post()  {
 		}
 		this.Data["json"] = &result
 		this.ServeJSON()
+		return
 	}
 	result := utils.ResultUtil{
 		Code: 200,
@@ -49,4 +50,5 @@ func (this *LoginController) Post()  {
 	}
 	this.Data["json"] = &result
 	this.ServeJSON()
+	return
 }

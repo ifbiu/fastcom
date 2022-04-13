@@ -20,6 +20,7 @@ func (this *SeedSMSController)Get()  {
 	if phone == "" {
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少必须参数phone"}
 		this.ServeJSON()
+		return
 	}
 	rds,err := db.InitRedis()
 	defer rds.Close()
@@ -34,6 +35,7 @@ func (this *SeedSMSController)Get()  {
 		Msg: "短信已成功发送，注意查收",
 	}
 	this.ServeJSON()
+	return
 }
 func generateCode()  string{
 	return fmt.Sprintf("%04v",rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(10000))//这里面前面的04v是和后面的1000相对应的

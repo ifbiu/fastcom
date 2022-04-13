@@ -35,6 +35,7 @@ func (this *GetOpenIdController) Get(){
 	if jscode == "" {
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少jscode字段"}
 		this.ServeJSON()
+		return
 	}
 	APPID := "wx729d7fc79ac8c86f"
 	SECRET := "48231588a3adeb2adeb07cf70e4db02a"
@@ -58,4 +59,5 @@ func (this *GetOpenIdController) Get(){
 		this.Data["json"] = getJsCodeErr
 	}
 	this.ServeJSON()
+	return
 }

@@ -62,6 +62,7 @@ func (this *RegisterUserController)Post()  {
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少必传参数："+isOpenid+isPhone+isImage+isSex+isNickname+isCode,
 		}
 		this.ServeJSON()
+		return
 	}
 	rds,err := db.InitRedis()
 	defer rds.Close()
@@ -78,6 +79,7 @@ func (this *RegisterUserController)Post()  {
 			Msg: "验证码已过期，请重新获取",
 		}
 		this.ServeJSON()
+		return
 	}
 	resCode, err := rds.Get(key)
 	if resCode != userParam.Code {
@@ -86,6 +88,7 @@ func (this *RegisterUserController)Post()  {
 			Msg: "验证码错误",
 		}
 		this.ServeJSON()
+		return
 	}
 	user := models.User{
 		OpenId: userParam.OpenId,
@@ -104,6 +107,7 @@ func (this *RegisterUserController)Post()  {
 			Msg: "注册失败，用户已存在",
 		}
 		this.ServeJSON()
+		return
 	}
 	if !status {
 		this.Data["json"] = utils.ResultUtil{
@@ -111,6 +115,7 @@ func (this *RegisterUserController)Post()  {
 			Msg: "注册失败",
 		}
 		this.ServeJSON()
+		return
 	}
 
 	this.Data["json"] = utils.ResultUtil{
@@ -118,4 +123,5 @@ func (this *RegisterUserController)Post()  {
 		Msg: "注册成功",
 	}
 	this.ServeJSON()
+	return
 }
