@@ -91,7 +91,7 @@ func (this *RegisterUserController)Post()  {
 		return
 	}
 	user := models.User{
-		OpenId: userParam.OpenId,
+		Openid: userParam.OpenId,
 		Phone: userParam.Phone,
 		Image: userParam.Image,
 		Sex: userParam.Sex,

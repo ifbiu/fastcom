@@ -1,10 +1,13 @@
 package models
 
+import "time"
+
 type User struct {
-	Id int `json:"id" orm:"id" orm:"id"`
-	OpenId string `json:"openid" orm:"openid"`
-	Phone string `json:"phone" orm:"phone"`
-	Image string `json:"image" orm:"image"`
-	Sex int `json:"sex" orm:"sex"`
-	NickName string `json:"nickName" orm:"nickname"`
+	Id int `json:"id"`
+	Openid string `json:"openid"`
+	Phone string `json:"phone"`
+	Image string `json:"image"`
+	Sex int `json:"sex"`
+	NickName string `json:"nickName"`
+	CreateTime time.Time `json:"createTime"`
 }
