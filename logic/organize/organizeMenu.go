@@ -3,6 +3,7 @@ package organize
 import (
 	"fastcom/models"
 	"github.com/astaxie/beego/orm"
+	"log"
 )
 
 type OrganizeMenu struct {
@@ -19,18 +20,17 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 	o := orm.NewOrm()
 	var organizeIdAll = []string{};
 	organizeAll := []models.Organize{}
+	var err error
 	if status == "admin" {
-		_,err := o.Raw("SELECT organize_id FROM member WHERE openid =? and authority in (1,2) order by id desc", openId).QueryRows(&organizeIdAll)
-		if err != nil {
-			return nil, err
-		}
+		_,err = o.Raw("SELECT organize_id FROM member WHERE openid =? and authority in (1,2) order by organize_id desc", openId).QueryRows(&organizeIdAll)
 	}
 
 	if status == "member" {
-		_,err := o.Raw("SELECT organize_id FROM member WHERE openid =? and authority = 3 order by id desc", openId).QueryRows(&organizeIdAll)
-		if err != nil {
-			return nil, err
-		}
+		_,err = o.Raw("SELECT organize_id FROM member WHERE openid =? and authority = 3 order by organize_id desc", openId).QueryRows(&organizeIdAll)
+	}
+	if err != nil {
+		log.Fatalln(err)
+		return nil, err
 	}
 
 	if len(organizeIdAll) == 0 {
@@ -45,8 +45,9 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 			wen += ",?"
 		}
 	}
-	_,err := o.Raw("SELECT * FROM organize WHERE id in ("+wen+") order by create_time desc", organizeIdAll).QueryRows(&organizeAll)
+	_,err = o.Raw("SELECT * FROM organize WHERE id in ("+wen+") order by create_time desc", organizeIdAll).QueryRows(&organizeAll)
 	if err != nil {
+		log.Fatalln(err)
 		return nil, err
 	}
 	organizeMenu := make([]OrganizeMenu,len(organizeAll))
