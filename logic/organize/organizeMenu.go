@@ -2,8 +2,8 @@ package organize
 
 import (
 	"fastcom/models"
+	"fmt"
 	"github.com/astaxie/beego/orm"
-	"log"
 )
 
 type OrganizeMenu struct {
@@ -23,14 +23,18 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 	var err error
 	if status == "admin" {
 		_,err = o.Raw("SELECT organize_id FROM member WHERE openid =? and authority in (1,2) order by organize_id desc", openId).QueryRows(&organizeIdAll)
+		if err != nil {
+			fmt.Println("-------1-------")
+			return nil, err
+		}
 	}
 
 	if status == "member" {
 		_,err = o.Raw("SELECT organize_id FROM member WHERE openid =? and authority = 3 order by organize_id desc", openId).QueryRows(&organizeIdAll)
-	}
-	if err != nil {
-		log.Fatalln(err)
-		return nil, err
+		if err != nil {
+			fmt.Println("-------2-------")
+			return nil, err
+		}
 	}
 
 	if len(organizeIdAll) == 0 {
@@ -47,7 +51,7 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 	}
 	_,err = o.Raw("SELECT * FROM organize WHERE id in ("+wen+") order by create_time desc", organizeIdAll).QueryRows(&organizeAll)
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println("-------3-------")
 		return nil, err
 	}
 	organizeMenu := make([]OrganizeMenu,len(organizeAll))
@@ -57,14 +61,17 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 		var superAdminName string
 		err := o.Raw("SElECT count(id) from member where organize_id = ? and authority in (1,2)", organize.Id).QueryRow(&adminIds)
 		if err != nil {
+			fmt.Println("-------4-------")
 			return nil, err
 		}
 		err = o.Raw("SElECT count(id) from member where organize_id = ? and authority = 3", organize.Id).QueryRow(&memberIds)
 		if err != nil {
+			fmt.Println("-------5-------")
 			return nil, err
 		}
 		err = o.Raw("SElECT name from member where organize_id = ? and authority = 1", organize.Id).QueryRow(&superAdminName)
 		if err != nil {
+			fmt.Println("-------6-------")
 			return nil, err
 		}
 		organizeMenu[i].CoverImg = organize.CoverImg
