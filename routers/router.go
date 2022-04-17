@@ -21,4 +21,5 @@ func init() {
 	beego.Router("/seedPhoneCode", &sms.SeedSMSController{})
 	beego.Router("/signOut", &login.SignOutController{})
 	beego.Router("/getOrganizeMenu", &organize.OrganizeMenuController{})
+	beego.Router("/addOrganize", &organize.AddOrganizeController{})
 }
