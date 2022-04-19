@@ -5,6 +5,7 @@ import (
 	"fastcom/common"
 	"fastcom/logic/organize"
 	"fastcom/utils"
+	"fmt"
 	"github.com/astaxie/beego"
 	"log"
 	"strconv"
@@ -66,21 +67,17 @@ func (this *AddOrganizeController) Post()  {
 		this.Redirect("/noAuth",302)
 		return
 	}
-
-	uuid := 0
-	uuid, err = strconv.Atoi(utils.GenerateNum(10))
+	uuid, err := strconv.Atoi(utils.GenerateNum(10))
 	if err != nil {
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "生成uuid失败！"}
 		this.ServeJSON()
 		return
 	}
-
-	addOrganize, err := organize.AddOrganize(uuid,organizeParam.Openid, organizeParam.OrganizeName, organizeParam.CoverImg, organizeParam.Introduce, organizeParam.AuthorName)
-	if err != nil {
-		return
-	}
-
-	if !addOrganize {
+	// 默认最大承载人数
+	maximum := 200
+	addOrganize, err := organize.AddOrganize(uuid,maximum,organizeParam.Openid, organizeParam.OrganizeName, organizeParam.CoverImg, organizeParam.Introduce, organizeParam.AuthorName)
+	if err != nil || !addOrganize {
+		fmt.Println(err)
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "服务异常，请联系管理员！"}
 		this.ServeJSON()
 		return

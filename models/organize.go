@@ -8,5 +8,6 @@ type Organize struct {
 	CoverImg string `json:"coverImg"`
 	OrganizeName string `json:"organizeName"`
 	Introduce string `json:"introduce"`
+	Maximum int `json:"maximum"`
 	CreateTime time.Time `json:"createTime"`
 }
