@@ -21,14 +21,14 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 	organizeAll := []models.Organize{}
 	var err error
 	if status == "admin" {
-		_,err = o.Raw("SELECT organize_id FROM member WHERE openid =? and authority in (1,2) order by organize_id desc", openId).QueryRows(&organizeIdAll)
+		_,err = o.Raw("SELECT organize_uuid FROM member WHERE openid =? and authority in (1,2) order by id desc", openId).QueryRows(&organizeIdAll)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	if status == "member" {
-		_,err = o.Raw("SELECT organize_id FROM member WHERE openid =? and authority = 3 order by organize_id desc", openId).QueryRows(&organizeIdAll)
+		_,err = o.Raw("SELECT organize_uuid FROM member WHERE openid =? and authority = 3 order by id desc", openId).QueryRows(&organizeIdAll)
 		if err != nil {
 			return nil, err
 		}
@@ -46,7 +46,7 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 			wen += ",?"
 		}
 	}
-	_,err = o.Raw("SELECT * FROM organize WHERE id in ("+wen+") order by create_time desc", organizeIdAll).QueryRows(&organizeAll)
+	_,err = o.Raw("SELECT * FROM organize WHERE uuid in ("+wen+") order by create_time desc", organizeIdAll).QueryRows(&organizeAll)
 	if err != nil {
 		return nil, err
 	}
@@ -55,15 +55,15 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 		var adminIds int
 		var memberIds int
 		var superAdminName string
-		err := o.Raw("SElECT count(id) from member where organize_id = ? and authority in (1,2)", organize.Id).QueryRow(&adminIds)
+		err := o.Raw("SElECT count(id) from member where organize_uuid = ? and authority in (1,2)", organize.Uuid).QueryRow(&adminIds)
 		if err != nil {
 			return nil, err
 		}
-		err = o.Raw("SElECT count(id) from member where organize_id = ? and authority = 3", organize.Id).QueryRow(&memberIds)
+		err = o.Raw("SElECT count(id) from member where organize_uuid = ? and authority = 3", organize.Uuid).QueryRow(&memberIds)
 		if err != nil {
 			return nil, err
 		}
-		err = o.Raw("SElECT name from member where organize_id = ? and authority = 1", organize.Id).QueryRow(&superAdminName)
+		err = o.Raw("SElECT name from member where organize_uuid = ? and authority = 1", organize.Uuid).QueryRow(&superAdminName)
 		if err != nil {
 			return nil, err
 		}
