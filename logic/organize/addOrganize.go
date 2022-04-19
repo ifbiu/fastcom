@@ -5,10 +5,10 @@ import (
 	"time"
 )
 
-func AddOrganize(openid string,organizeName string,coverImg string,introduce string,authorName string) (bool,error) {
+func AddOrganize(uuid int,openid string,organizeName string,coverImg string,introduce string,authorName string) (bool,error) {
 	o := orm.NewOrm()
 	now := time.Now().Format("2006-01-02 15:04:05")
-	r1,err := o.Raw("INSERT INTO organize(cover_img, organize_name, introduce, create_time) values (?,?,?,?)",coverImg,organizeName,introduce,now).Exec()
+	r1,err := o.Raw("INSERT INTO organize(uuid, cover_img, organize_name, introduce, create_time) values (?,?,?,?,?)",uuid,coverImg,organizeName,introduce,now).Exec()
 	if err != nil {
 		return false, err
 	}
@@ -19,7 +19,7 @@ func AddOrganize(openid string,organizeName string,coverImg string,introduce str
 	if organizeId == 0 {
 		return false, err
 	}
-	_,err = o.Raw("INSERT INTO member(organize_id, name, openid,authority, create_time) values (?,?,?,?,?)",organizeId,authorName,openid,1,now).Exec()
+	_,err = o.Raw("INSERT INTO member(organize_uuid, name, openid,authority, create_time) values (?,?,?,?,?)",uuid,authorName,openid,1,now).Exec()
 	if err != nil {
 		return false, err
 	}

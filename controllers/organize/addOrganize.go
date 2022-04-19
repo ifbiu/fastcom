@@ -7,6 +7,7 @@ import (
 	"fastcom/utils"
 	"github.com/astaxie/beego"
 	"log"
+	"strconv"
 )
 
 type AddOrganizeController struct {
@@ -66,7 +67,15 @@ func (this *AddOrganizeController) Post()  {
 		return
 	}
 
-	addOrganize, err := organize.AddOrganize(organizeParam.Openid, organizeParam.OrganizeName, organizeParam.CoverImg, organizeParam.Introduce, organizeParam.AuthorName)
+	uuid := 0
+	uuid, err = strconv.Atoi(utils.GenerateNum(10))
+	if err != nil {
+		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "生成uuid失败！"}
+		this.ServeJSON()
+		return
+	}
+
+	addOrganize, err := organize.AddOrganize(uuid,organizeParam.Openid, organizeParam.OrganizeName, organizeParam.CoverImg, organizeParam.Introduce, organizeParam.AuthorName)
 	if err != nil {
 		return
 	}

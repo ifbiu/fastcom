@@ -4,6 +4,7 @@ import "time"
 
 type Member struct {
 	Id int `json:"id"`
+	Uuid int `json:"uuid"`
 	OrganizeId int `json:"organizeId"`
 	Name string `json:"name"`
 	Openid string `json:"openid"`
