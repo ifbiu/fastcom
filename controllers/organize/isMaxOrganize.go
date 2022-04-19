@@ -15,7 +15,7 @@ type IsMaxOrganize struct {
 type MaxOrganize struct {
 	Code int `json:"code"`
 	Msg string `json:"msg"`
-	IsFull bool `json:"isFull"`
+	State int `json:"state"`
 }
 
 func (this *IsMaxOrganize) Get()  {
@@ -57,9 +57,10 @@ func (this *IsMaxOrganize) Get()  {
 	}
 
 	if !isHave {
-		result := utils.ResultUtil{
-			Code: 500,
+		result := MaxOrganize{
+			Code: 200,
 			Msg: "用户已加入该组织，不可重复加入！",
+			State: 3,
 		}
 		this.Data["json"] = &result
 		this.ServeJSON()
@@ -70,7 +71,7 @@ func (this *IsMaxOrganize) Get()  {
 		result := MaxOrganize{
 			Code: 200,
 			Msg: "该组织已满！",
-			IsFull: true,
+			State: 2,
 		}
 		this.Data["json"] = &result
 		this.ServeJSON()
@@ -80,7 +81,7 @@ func (this *IsMaxOrganize) Get()  {
 	result := MaxOrganize{
 		Code: 200,
 		Msg: "可以加入该组织",
-		IsFull: false,
+		State: 1,
 	}
 	this.Data["json"] = &result
 	this.ServeJSON()
