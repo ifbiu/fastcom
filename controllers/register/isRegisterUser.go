@@ -1,14 +1,14 @@
 package register
 
 import (
+	"fastcom/controllers"
 	"fastcom/logic/register"
 	"fastcom/utils"
-	"github.com/astaxie/beego"
 	"log"
 )
 
 type IsRegisterUserController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 func (this *IsRegisterUserController) Get()  {

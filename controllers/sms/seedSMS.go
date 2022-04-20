@@ -1,17 +1,17 @@
 package sms
 
 import (
+	"fastcom/controllers"
 	"fastcom/db"
 	"fastcom/utils"
 	"fmt"
-	"github.com/astaxie/beego"
 	"log"
 	"math/rand"
 	"time"
 )
 
 type SeedSMSController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 func (this *SeedSMSController)Get()  {

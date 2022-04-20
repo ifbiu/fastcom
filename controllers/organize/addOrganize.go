@@ -3,16 +3,16 @@ package organize
 import (
 	"encoding/json"
 	"fastcom/common"
+	"fastcom/controllers"
 	"fastcom/logic/organize"
 	"fastcom/utils"
 	"fmt"
-	"github.com/astaxie/beego"
 	"log"
 	"strconv"
 )
 
 type AddOrganizeController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 type RequestOrganize struct {

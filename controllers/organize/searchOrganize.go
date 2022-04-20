@@ -2,21 +2,22 @@ package organize
 
 import (
 	"fastcom/common"
+	"fastcom/controllers"
 	"fastcom/logic/organize"
 	"fastcom/utils"
 	"fmt"
-	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
 	"log"
 	"strconv"
 )
 
 type SearchOrganizeController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 type RequestSearchOrganize struct {
 	Code int `json:"code"`
-	Data organize.SearchOrganizeAll `json:"data"`
+	Data interface{} `json:"data"`
 }
 
 func (this *SearchOrganizeController) Get()  {
@@ -58,6 +59,21 @@ func (this *SearchOrganizeController) Get()  {
 
 	searchOrganize, err := organize.SearchOrganize(uuid)
 	if err != nil {
+		if err == orm.ErrNoRows{
+			result := RequestSearchOrganize{
+				Code: 200,
+				Data: new(interface{}),
+			}
+			this.Data["json"] = &result
+			this.ServeJSON()
+			return
+		}
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "服务异常！",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
 		return
 	}
 	result := RequestSearchOrganize{

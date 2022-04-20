@@ -2,16 +2,17 @@ package register
 
 import (
 	"encoding/json"
+	"fastcom/controllers"
 	"fastcom/db"
 	"fastcom/logic/register"
 	"fastcom/models"
 	"fastcom/utils"
-	"github.com/astaxie/beego"
+	"fmt"
 	"log"
 )
 
 type RegisterUserController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 type RequestUser struct {
@@ -25,7 +26,11 @@ type RequestUser struct {
 
 func (this *RegisterUserController)Post()  {
 	userParam := &RequestUser{}
-	json.Unmarshal(this.Ctx.Input.RequestBody, userParam)
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, userParam)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	key := "sms:"+userParam.Phone
 	if userParam.OpenId=="" ||
 		userParam.Phone=="" ||

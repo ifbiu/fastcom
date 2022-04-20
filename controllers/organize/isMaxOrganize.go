@@ -2,16 +2,16 @@ package organize
 
 import (
 	"fastcom/common"
+	"fastcom/controllers"
 	"fastcom/logic/organize"
 	"fastcom/utils"
 	"fmt"
-	"github.com/astaxie/beego"
 	"log"
 	"strconv"
 )
 
 type IsMaxOrganizeController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 type MaxOrganize struct {

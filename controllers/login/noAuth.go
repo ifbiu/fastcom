@@ -1,13 +1,13 @@
 package login
 
 import (
+	"fastcom/controllers"
 	"fastcom/utils"
-	"github.com/astaxie/beego"
 )
 
 
 type NoAuthController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 func (this * NoAuthController) Get()  {

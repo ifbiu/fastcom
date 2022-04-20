@@ -1,14 +1,14 @@
 package openId
 
 import (
+	"fastcom/controllers"
 	"fastcom/utils"
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/httplib"
 	"log"
 )
 
 type GetOpenIdController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 type GetJsCode struct {

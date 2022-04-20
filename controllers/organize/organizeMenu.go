@@ -2,14 +2,14 @@ package organize
 
 import (
 	"fastcom/common"
+	"fastcom/controllers"
 	"fastcom/logic/organize"
 	"fastcom/utils"
-	"github.com/astaxie/beego"
 	"log"
 )
 
 type OrganizeMenuController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 func (this *OrganizeMenuController) Get()  {

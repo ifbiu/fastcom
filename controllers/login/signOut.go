@@ -1,14 +1,14 @@
 package login
 
 import (
+	"fastcom/controllers"
 	"fastcom/db"
 	"fastcom/utils"
-	"github.com/astaxie/beego"
 	"log"
 )
 
 type SignOutController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 func (this *SignOutController) Get() {

@@ -2,15 +2,15 @@ package login
 
 import (
 	"encoding/json"
+	"fastcom/controllers"
 	"fastcom/db"
 	"fastcom/utils"
-	"github.com/astaxie/beego"
 	"log"
 	"time"
 )
 
 type LoginController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 type RequestLogin struct {
