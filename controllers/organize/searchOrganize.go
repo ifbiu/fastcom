@@ -10,17 +10,16 @@ import (
 	"strconv"
 )
 
-type IsMaxOrganizeController struct {
+type SearchOrganizeController struct {
 	beego.Controller
 }
 
-type MaxOrganize struct {
+type RequestSearchOrganize struct {
 	Code int `json:"code"`
-	Msg string `json:"msg"`
-	State int `json:"state"`
+	Data organize.SearchOrganizeAll `json:"data"`
 }
 
-func (this *IsMaxOrganizeController) Get()  {
+func (this *SearchOrganizeController) Get()  {
 	openId := this.GetString("openid")
 	uuidStr := this.GetString("uuid")
 	if openId == "" || uuidStr == "" {
@@ -57,44 +56,13 @@ func (this *IsMaxOrganizeController) Get()  {
 		return
 	}
 
-	isHave,resBool, err := organize.IsMaxOrganize(uuid,openId)
+	searchOrganize, err := organize.SearchOrganize(uuid)
 	if err != nil {
-		fmt.Println(err)
-		result := utils.ResultUtil{
-			Code: 500,
-			Msg: "服务器异常！",
-		}
-		this.Data["json"] = &result
-		this.ServeJSON()
 		return
 	}
-
-	if !isHave {
-		result := MaxOrganize{
-			Code: 200,
-			Msg: "用户已加入该组织，不可重复加入！",
-			State: 3,
-		}
-		this.Data["json"] = &result
-		this.ServeJSON()
-		return
-	}
-
-	if !resBool {
-		result := MaxOrganize{
-			Code: 200,
-			Msg: "该组织已满！",
-			State: 2,
-		}
-		this.Data["json"] = &result
-		this.ServeJSON()
-		return
-	}
-
-	result := MaxOrganize{
+	result := RequestSearchOrganize{
 		Code: 200,
-		Msg: "可以加入该组织",
-		State: 1,
+		Data: searchOrganize,
 	}
 	this.Data["json"] = &result
 	this.ServeJSON()

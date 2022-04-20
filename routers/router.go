@@ -22,5 +22,6 @@ func init() {
 	beego.Router("/signOut", &login.SignOutController{})
 	beego.Router("/getOrganizeMenu", &organize.OrganizeMenuController{})
 	beego.Router("/addOrganize", &organize.AddOrganizeController{})
-	beego.Router("/isMaxOrganize", &organize.IsMaxOrganize{})
+	beego.Router("/isMaxOrganize", &organize.IsMaxOrganizeController{})
+	beego.Router("/searchOrganize", &organize.SearchOrganizeController{})
 }
