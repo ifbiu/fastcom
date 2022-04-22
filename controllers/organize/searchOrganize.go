@@ -3,6 +3,7 @@ package organize
 import (
 	"fastcom/common"
 	"fastcom/controllers"
+	"fastcom/db"
 	"fastcom/logic/organize"
 	"fastcom/utils"
 	"fmt"
@@ -32,6 +33,22 @@ func (this *SearchOrganizeController) Get()  {
 			msg += "uuid "
 		}
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少字段："+msg}
+		this.ServeJSON()
+		return
+	}
+	key := "searchOrganize:"+openId
+	rds,err := db.InitRedis()
+	defer rds.Close()
+	if err != nil {
+		log.Panicln(err)
+	}
+	_, err = rds.LPush(key, uuidStr)
+	if err != nil {
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "服务异常！",
+		}
+		this.Data["json"] = &result
 		this.ServeJSON()
 		return
 	}

@@ -58,6 +58,24 @@ func (this *RedisClient) Set(key string, val interface{}, ttl time.Duration) err
 	return err
 }
 
+// lpush方法封装
+func (this *RedisClient) LPush(key string,data interface{}) (int64, error) {
+	ret,err := this.c.LPush(key,data).Result()
+	return ret, err
+}
+
+// lrange
+func (this *RedisClient) LRange(key string,start int64,stop int64) ([]string, error) {
+	ret,err := this.c.LRange(key,start,stop).Result()
+	return ret, err
+}
+
+// lrangeAll
+func (this *RedisClient) LRangeAll(key string) ([]string, error) {
+	ret,err := this.c.LRange(key,0,-1).Result()
+	return ret, err
+}
+
 // Exists方法封装
 func (this *RedisClient) Exists(key string) (bool, error) {
 	v, err := this.c.Exists(key).Result()

@@ -24,4 +24,6 @@ func init() {
 	beego.Router("/addOrganize", &organize.AddOrganizeController{})
 	beego.Router("/isMaxOrganize", &organize.IsMaxOrganizeController{})
 	beego.Router("/searchOrganize", &organize.SearchOrganizeController{})
+	beego.Router("/historyRecord", &organize.HistoryRecordController{})
+	beego.Router("/delHistoryRecord", &organize.DelHistoryRecordController{})
 }
