@@ -26,4 +26,5 @@ func init() {
 	beego.Router("/searchOrganize", &organize.SearchOrganizeController{})
 	beego.Router("/historyRecord", &organize.HistoryRecordController{})
 	beego.Router("/delHistoryRecord", &organize.DelHistoryRecordController{})
+	beego.Router("/getUserInfo", &login.GetUserInfoController{})
 }
