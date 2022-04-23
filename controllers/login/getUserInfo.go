@@ -37,7 +37,7 @@ func (this *GetUserInfoController) Get() {
 		this.ServeJSON()
 		return
 	}
-	this.Data["json"] = utils.ResultDataUtil{Code: 500,Data: info}
+	this.Data["json"] = utils.ResultDataUtil{Code: 200,Data: info}
 	this.ServeJSON()
 	return
 
