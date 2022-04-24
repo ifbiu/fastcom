@@ -38,7 +38,7 @@ func (this *HistoryRecordController) Get()  {
 	if err != nil {
 		log.Panicln(err)
 	}
-	resArr, err := rds.LRange(key,0,8)
+	resArr, err := rds.ZRevRange(key,0,8)
 	if err != nil {
 		result := utils.ResultUtil{
 			Code: 500,

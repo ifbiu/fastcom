@@ -42,7 +42,7 @@ func (this *SearchOrganizeController) Get()  {
 	if err != nil {
 		log.Panicln(err)
 	}
-	_, err = rds.LPush(key, uuidStr)
+	_, err = rds.ZIncrBy(key, 1,uuidStr)
 	if err != nil {
 		result := utils.ResultUtil{
 			Code: 500,
