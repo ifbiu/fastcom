@@ -6,6 +6,7 @@ import (
 )
 
 type OrganizeMenu struct {
+	Uuid int `json:"uuid"`
 	CoverImg string `json:"coverImg"`
 	OrganizeName string `json:"organizeName"`
 	Introduce string `json:"introduce"`
@@ -67,6 +68,7 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 		if err != nil {
 			return nil, err
 		}
+		organizeMenu[i].Uuid = organize.Uuid
 		organizeMenu[i].CoverImg = organize.CoverImg
 		organizeMenu[i].OrganizeName = organize.OrganizeName
 		organizeMenu[i].Introduce = organize.Introduce
