@@ -29,4 +29,6 @@ func init() {
 	beego.Router("/getUserInfo", &login.GetUserInfoController{})
 	beego.Router("/getAuthOrganize", &organize.GetAuthOrganize{})
 	beego.Router("/editOrganize", &organize.EditOrganizeController{})
+	beego.Router("/signOutOrganize", &organize.SignOutOrganizeController{})
+	beego.Router("/dissolutionOrganize", &organize.DissolutionOrganizeController{})
 }
