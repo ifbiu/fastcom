@@ -10,4 +10,5 @@ type Organize struct {
 	Introduce string `json:"introduce"`
 	Maximum int `json:"maximum"`
 	CreateTime time.Time `json:"createTime"`
+	UpdateTime time.Time `json:"updateTime"`
 }
