@@ -3,6 +3,7 @@ package routers
 import (
 	"fastcom/controllers"
 	"fastcom/controllers/login"
+	"fastcom/controllers/member"
 	"fastcom/controllers/openId"
 	"fastcom/controllers/organize"
 	"fastcom/controllers/register"
@@ -31,4 +32,5 @@ func init() {
 	beego.Router("/editOrganize", &organize.EditOrganizeController{})
 	beego.Router("/signOutOrganize", &organize.SignOutOrganizeController{})
 	beego.Router("/dissolutionOrganize", &organize.DissolutionOrganizeController{})
+	beego.Router("/getMemberInfo", &member.GetMemberInfoController{})
 }
