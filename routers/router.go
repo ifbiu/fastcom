@@ -34,4 +34,5 @@ func init() {
 	beego.Router("/dissolutionOrganize", &organize.DissolutionOrganizeController{})
 	beego.Router("/getMemberInfo", &member.GetMemberInfoController{})
 	beego.Router("/deleteMember", &member.DeleteMemberController{})
+	beego.Router("/changeRemarks", &member.ChangeRemarksController{})
 }
