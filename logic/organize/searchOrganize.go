@@ -13,6 +13,12 @@ type SearchOrganizeAll struct {
 	AdminCount int `json:"adminCount"`
 	MemberCount int `json:"memberCount"`
 	SuperAdminName string `json:"superAdminName"`
+	SuperAdminImage string `json:"superAdminImage"`
+}
+
+type SuperAdmin struct {
+	NickName string `json:"nickName"`
+	Image string `json:"image"`
 }
 
 func SearchOrganize(uuid int) (SearchOrganizeAll,error) {
@@ -20,7 +26,7 @@ func SearchOrganize(uuid int) (SearchOrganizeAll,error) {
 	var searchOrganizeAll SearchOrganizeAll
 	var adminIds int
 	var memberIds int
-	var superAdminName string
+	var superAdmin SuperAdmin
 
 	err := o.Raw("SELECT * FROM organize WHERE uuid = ? order by create_time desc", uuid).QueryRow(&searchOrganizeAll)
 	if err != nil {
@@ -34,12 +40,13 @@ func SearchOrganize(uuid int) (SearchOrganizeAll,error) {
 	if err != nil {
 		return SearchOrganizeAll{}, err
 	}
-	err = o.Raw("SElECT name from member where organize_uuid = ? and authority = 1", uuid).QueryRow(&superAdminName)
+	err = o.Raw("SElECT member.name as name,user.image as image from member join user on member.openid = user.openid where organize_uuid = ? and authority = 1", uuid).QueryRow(&superAdmin)
 	if err != nil {
 		return SearchOrganizeAll{}, err
 	}
 	searchOrganizeAll.AdminCount = adminIds
 	searchOrganizeAll.MemberCount = memberIds
-	searchOrganizeAll.SuperAdminName = superAdminName
+	searchOrganizeAll.SuperAdminName = superAdmin.NickName
+	searchOrganizeAll.SuperAdminImage = superAdmin.Image
 	return searchOrganizeAll,nil
 }

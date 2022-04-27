@@ -76,6 +76,7 @@ func (this *SearchOrganizeController) Get()  {
 
 	searchOrganize, err := organize.SearchOrganize(uuid)
 	if err != nil {
+		fmt.Println(err)
 		if err == orm.ErrNoRows{
 			result := RequestSearchOrganize{
 				Code: 200,
