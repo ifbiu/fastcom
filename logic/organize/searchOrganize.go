@@ -17,7 +17,7 @@ type SearchOrganizeAll struct {
 }
 
 type SuperAdmin struct {
-	NickName string `json:"nickName"`
+	Name string `json:"name"`
 	Image string `json:"image"`
 }
 
@@ -46,7 +46,7 @@ func SearchOrganize(uuid int) (SearchOrganizeAll,error) {
 	}
 	searchOrganizeAll.AdminCount = adminIds
 	searchOrganizeAll.MemberCount = memberIds
-	searchOrganizeAll.SuperAdminName = superAdmin.NickName
+	searchOrganizeAll.SuperAdminName = superAdmin.Name
 	searchOrganizeAll.SuperAdminImage = superAdmin.Image
 	return searchOrganizeAll,nil
 }
