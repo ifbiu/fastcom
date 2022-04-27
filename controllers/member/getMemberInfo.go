@@ -63,7 +63,7 @@ func (this *GetMemberInfoController) Get() {
 		this.ServeJSON()
 		return
 	}
-	memberInfo,err := member.GetMemberInfo(authOrganize,uuid)
+	memberInfo,err := member.GetMemberInfo(authOrganize,uuid,openId)
 	if err != nil {
 		fmt.Println(err)
 		this.Data["json"] = utils.ResultUtil{

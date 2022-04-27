@@ -19,6 +19,7 @@ type responseData1 struct {
 	Openid string `json:"openid"`
 	Image string `json:"image"`
 	Name string `json:"name"`
+	IsMe bool `json:"isMe"`
 }
 
 type responseData2 struct {
@@ -26,9 +27,10 @@ type responseData2 struct {
 	Image string `json:"image"`
 	Name string `json:"name"`
 	Phone string `json:"phone"`
+	IsMe bool `json:"isMe"`
 }
 
-func GetMemberInfo(authOrganize interface{},uuid int) (interface{},error) {
+func GetMemberInfo(authOrganize interface{},uuid int,openId string) (interface{},error) {
 	o := orm.NewOrm()
 	if authOrganize == 3 {
 		var users memberInfo1
@@ -63,6 +65,27 @@ func GetMemberInfo(authOrganize interface{},uuid int) (interface{},error) {
 		_,err = o.Raw("select member.openid as openid,image,name,phone from member join user on member.openid = user.openid where authority=3 and organize_uuid=?",uuid).QueryRows(&Data3)
 		if err != nil {
 			return nil,err
+		}
+		for i1, data1 := range Data1 {
+			if data1.Openid == openId {
+				Data1[i1].IsMe = true
+			}else{
+				Data1[i1].IsMe = false
+			}
+		}
+		for i2, data2 := range Data2 {
+			if data2.Openid == openId {
+				Data1[i2].IsMe = true
+			}else{
+				Data1[i2].IsMe = false
+			}
+		}
+		for i3, data3 := range Data3 {
+			if data3.Openid == openId {
+				Data1[i3].IsMe = true
+			}else{
+				Data1[i3].IsMe = false
+			}
 		}
 		users.Manager = Data1
 		users.Admin = Data2
