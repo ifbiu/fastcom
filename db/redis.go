@@ -112,4 +112,15 @@ func (this *RedisClient) Del(key string)(bool, error) {
 	return v > 0, nil
 }
 
+// 发布订阅
+// 发布
+func (this *RedisClient) Publish(topic string,message string) (int64, error) {
+	result, err := this.c.Publish(topic, message).Result()
+	return result,err
+}
 
+// 订阅
+func (this *RedisClient) Subscribe(topic string) (*redis.PubSub) {
+	subscribe := this.c.Subscribe(topic)
+	return subscribe
+}

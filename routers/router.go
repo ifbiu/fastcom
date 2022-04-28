@@ -4,6 +4,7 @@ import (
 	"fastcom/controllers"
 	"fastcom/controllers/login"
 	"fastcom/controllers/member"
+	"fastcom/controllers/message"
 	"fastcom/controllers/openId"
 	"fastcom/controllers/organize"
 	"fastcom/controllers/register"
@@ -37,4 +38,6 @@ func init() {
 	beego.Router("/changeRemarks", &member.ChangeRemarksController{})
 	beego.Router("/setAdmin", &member.SetAdminController{})
 	beego.Router("/transferManager", &member.TransferManagerController{})
+	beego.Router("/publishMessage", &message.PublishMessageController{})
+	beego.Router("/subscribeMessage", &message.SubscribeMessageController{})
 }

@@ -47,6 +47,27 @@ func GetMemberInfo(authOrganize interface{},uuid int,openId string) (interface{}
 		if err != nil {
 			return nil,err
 		}
+		for i1, data1 := range Data1 {
+			if data1.Openid == openId {
+				Data1[i1].IsMe = true
+			}else{
+				Data1[i1].IsMe = false
+			}
+		}
+		for i2, data2 := range Data2 {
+			if data2.Openid == openId {
+				Data1[i2].IsMe = true
+			}else{
+				Data1[i2].IsMe = false
+			}
+		}
+		for i3, data3 := range Data3 {
+			if data3.Openid == openId {
+				Data1[i3].IsMe = true
+			}else{
+				Data1[i3].IsMe = false
+			}
+		}
 		users.Manager = Data1
 		users.Admin = Data2
 		users.Member = Data3
