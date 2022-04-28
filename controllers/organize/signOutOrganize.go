@@ -74,6 +74,7 @@ func (this *SignOutOrganizeController) Get()  {
 
 	outOrganize, err := organize.SignOutOrganize(openId, uuid)
 	if err != nil || !outOrganize{
+		fmt.Println(err)
 		result := utils.ResultUtil{
 			Code: 500,
 			Msg: "服务异常！",
