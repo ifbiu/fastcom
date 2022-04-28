@@ -4,7 +4,7 @@ import "github.com/astaxie/beego/orm"
 
 func SignOutOrganize(openId string,uuid int) (bool,error) {
 	o := orm.NewOrm()
-	r1,err := o.Raw("delete from member where uuid=? and openid=?",uuid,openId).Exec()
+	r1,err := o.Raw("delete from member where organize_uuid=? and openid=?",uuid,openId).Exec()
 	if err != nil {
 		return false, err
 	}
