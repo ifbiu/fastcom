@@ -56,16 +56,16 @@ func GetMemberInfo(authOrganize interface{},uuid int,openId string) (interface{}
 		}
 		for i2, data2 := range Data2 {
 			if data2.Openid == openId {
-				Data1[i2].IsMe = true
+				Data2[i2].IsMe = true
 			}else{
-				Data1[i2].IsMe = false
+				Data2[i2].IsMe = false
 			}
 		}
 		for i3, data3 := range Data3 {
 			if data3.Openid == openId {
-				Data1[i3].IsMe = true
+				Data3[i3].IsMe = true
 			}else{
-				Data1[i3].IsMe = false
+				Data3[i3].IsMe = false
 			}
 		}
 		users.Manager = Data1
@@ -96,16 +96,16 @@ func GetMemberInfo(authOrganize interface{},uuid int,openId string) (interface{}
 		}
 		for i2, data2 := range Data2 {
 			if data2.Openid == openId {
-				Data1[i2].IsMe = true
+				Data2[i2].IsMe = true
 			}else{
-				Data1[i2].IsMe = false
+				Data2[i2].IsMe = false
 			}
 		}
 		for i3, data3 := range Data3 {
 			if data3.Openid == openId {
-				Data1[i3].IsMe = true
+				Data3[i3].IsMe = true
 			}else{
-				Data1[i3].IsMe = false
+				Data3[i3].IsMe = false
 			}
 		}
 		users.Manager = Data1
