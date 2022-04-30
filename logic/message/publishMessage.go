@@ -1,6 +1,7 @@
 package message
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/orm"
 	"time"
 )
@@ -28,6 +29,7 @@ func PublishMessage(openids []string,uuid string,title string,content string) (b
 		return false, err
 	}
 	for _, openid := range openids {
+		fmt.Println(openid)
 		_, err := o.Raw("INSERT INTO status (openid,organize_uuid,type,type_id,is_read,read_time) VALUES (?,?,?,?,?,?)",openid,uuid,1,id,1,now).Exec()
 		if err != nil {
 			return false, err
