@@ -186,7 +186,7 @@ func (this *PublishMessageController) Post()  {
 
 	result := utils.ResultUtil{
 		Code: 200,
-		Msg: "发布消息成功！",
+		Msg: "发布公告成功！",
 	}
 	this.Data["json"] = &result
 	this.ServeJSON()
