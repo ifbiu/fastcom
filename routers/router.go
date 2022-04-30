@@ -40,5 +40,4 @@ func init() {
 	beego.Router("/cancelAdmin", &member.CancelAdminController{})
 	beego.Router("/transferManager", &member.TransferManagerController{})
 	beego.Router("/publishMessage", &message.PublishMessageController{})
-	beego.Router("/subscribeMessage", &message.SubscribeMessageController{})
 }
