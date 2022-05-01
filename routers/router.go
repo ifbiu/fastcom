@@ -7,6 +7,7 @@ import (
 	"fastcom/controllers/message"
 	"fastcom/controllers/openId"
 	"fastcom/controllers/organize"
+	"fastcom/controllers/personal"
 	"fastcom/controllers/register"
 	"fastcom/controllers/sms"
 	"github.com/astaxie/beego"
@@ -40,4 +41,8 @@ func init() {
 	beego.Router("/cancelAdmin", &member.CancelAdminController{})
 	beego.Router("/transferManager", &member.TransferManagerController{})
 	beego.Router("/publishMessage", &message.PublishMessageController{})
+	beego.Router("/updateHeadPortrait", &personal.UpdateHeadPortraitController{})
+	beego.Router("/updateNickName", &personal.UpdateNickNameController{})
+	beego.Router("/updatePhone", &personal.UpdatePhoneController{})
+	beego.Router("/updateSex", &personal.UpdateSexController{})
 }
