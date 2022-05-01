@@ -5,6 +5,7 @@ import (
 	"fastcom/common"
 	"fastcom/controllers"
 	"fastcom/utils"
+	"fmt"
 	"log"
 )
 
@@ -54,7 +55,13 @@ func (this *FeedbackController) Post()  {
 		return
 	}
 
-
+	err = utils.SendsCoderMail(feedbackParam.Title, feedbackParam.Content, feedbackParam.Openid)
+	if err != nil {
+		fmt.Println(err)
+		this.Data["json"] = utils.ResultUtil{Code: 200,Msg: "反馈失败！"}
+		this.ServeJSON()
+		return
+	}
 
 	this.Data["json"] = utils.ResultUtil{Code: 200,Msg: "反馈成功！"}
 	this.ServeJSON()

@@ -45,4 +45,5 @@ func init() {
 	beego.Router("/updateNickName", &personal.UpdateNickNameController{})
 	beego.Router("/updatePhone", &personal.UpdatePhoneController{})
 	beego.Router("/updateSex", &personal.UpdateSexController{})
+	beego.Router("/feedback", &personal.FeedbackController{})
 }
