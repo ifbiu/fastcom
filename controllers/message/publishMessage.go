@@ -29,6 +29,7 @@ type RequestPublishMessage struct {
 	Uuid string `json:"uuid"`
 	Title string `json:"title"`
 	Content string `json:"content"`
+	Members []string `json:"members"`
 }
 
 func (this *PublishMessageController) Post()  {
@@ -37,12 +38,14 @@ func (this *PublishMessageController) Post()  {
 	if publishParam.Openid=="" ||
 		publishParam.Uuid=="" ||
 		publishParam.Title=="" ||
-		publishParam.Content == "" {
+		publishParam.Content == ""||
+		len(publishParam.Members)==0 {
 		var (
-			isOpenid string = ""
-			isUuid string = ""
-			isTitle string = ""
-			isContent string = ""
+			isOpenid = ""
+			isUuid = ""
+			isTitle = ""
+			isContent = ""
+			isMembers = ""
 		)
 		if publishParam.Openid=="" {
 			isOpenid = "openid "
@@ -56,8 +59,10 @@ func (this *PublishMessageController) Post()  {
 		if publishParam.Content=="" {
 			isContent = "content "
 		}
-		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少必传参数："+isOpenid+isUuid+isTitle+isContent,
+		if len(publishParam.Members)==0 {
+			isMembers = "members "
 		}
+		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少必传参数："+isOpenid+isUuid+isTitle+isContent+isMembers}
 		this.ServeJSON()
 		return
 	}
@@ -105,19 +110,19 @@ func (this *PublishMessageController) Post()  {
 		return
 	}
 
-	openids, err := message.SelectOpenids(publishParam.Uuid)
-	if err != nil {
-		fmt.Println(err)
-		result := utils.ResultUtil{
-			Code: 500,
-			Msg: "抱歉，搜索不到成员！",
-		}
-		this.Data["json"] = &result
-		this.ServeJSON()
-		return
-	}
+	//openids, err := message.SelectOpenids(publishParam.Uuid)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	result := utils.ResultUtil{
+	//		Code: 500,
+	//		Msg: "抱歉，搜索不到成员！",
+	//	}
+	//	this.Data["json"] = &result
+	//	this.ServeJSON()
+	//	return
+	//}
 
-	_, err = message.PublishMessage(openids,publishParam.Uuid,publishParam.Title,publishParam.Content)
+	_, err = message.PublishMessage(publishParam.Members,publishParam.Uuid,publishParam.Title,publishParam.Content)
 	if err != nil {
 		fmt.Println(err)
 		result := utils.ResultUtil{
@@ -161,8 +166,8 @@ func (this *PublishMessageController) Post()  {
 	failOnError(err, "Failed to declare an exchange")
 
 	openIdStr:=""
-	if len(openids)>0 {
-		for i, openid := range openids {
+	if len(publishParam.Members)>0 {
+		for i, openid := range publishParam.Members {
 			if i==0 {
 				openIdStr = openid
 			}else{

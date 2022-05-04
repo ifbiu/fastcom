@@ -9,7 +9,7 @@ import (
 func init()  {
 	conn, err := InitAmqp()
 	if err != nil {
-		log.Println("rabbitmq connect error!")
+		log.Panicln("rabbitmq connect error!")
 		return
 	}
 	defer conn.Close()
