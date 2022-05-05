@@ -7,5 +7,6 @@ type Notice struct {
 	OrganizeUuid int `json:"organize_uuid"`
 	Title string `json:"title"`
 	Content string `json:"content"`
-	CreateTime time.Time `json:"createTime"`
+	CreateUser string `json:"create_user"`
+	CreateTime time.Time `json:"create_time"`
 }

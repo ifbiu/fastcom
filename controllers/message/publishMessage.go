@@ -122,7 +122,7 @@ func (this *PublishMessageController) Post()  {
 	//	return
 	//}
 
-	_, err = message.PublishMessage(publishParam.Members,publishParam.Uuid,publishParam.Title,publishParam.Content)
+	_, err = message.PublishMessage(publishParam.Openid,publishParam.Members,publishParam.Uuid,publishParam.Title,publishParam.Content)
 	if err != nil {
 		fmt.Println(err)
 		result := utils.ResultUtil{
