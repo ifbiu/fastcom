@@ -50,9 +50,9 @@ func GetMessageMenu(openId string) (interface{},error) {
 			now.Day()-1 == v.ShowTime.Day() {
 			responseMessageMenu[i].ShowTime = v.ShowTime.Format("昨天 15:04")
 		}else if now.Year() == v.ShowTime.Year(){
-			responseMessageMenu[i].ShowTime = v.ShowTime.Format("1月2日")
+			responseMessageMenu[i].ShowTime = v.ShowTime.Format("01月02日")
 		}else{
-			responseMessageMenu[i].ShowTime = v.ShowTime.Format("2006年1月2日")
+			responseMessageMenu[i].ShowTime = v.ShowTime.Format("2006年01月02日")
 		}
 	}
 	return responseMessageMenu,nil
