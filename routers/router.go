@@ -47,4 +47,5 @@ func init() {
 	beego.Router("/updateSex", &personal.UpdateSexController{})
 	beego.Router("/feedback", &personal.FeedbackController{})
 	beego.Router("/messageMenu", &message.MessageMenuController{})
+	beego.Router("/messageInfo", &message.MessageInfoController{})
 }

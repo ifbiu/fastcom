@@ -1,6 +1,7 @@
 package message
 
 import (
+	"fastcom/common"
 	"github.com/astaxie/beego/orm"
 	"time"
 )
@@ -39,21 +40,7 @@ func GetMessageMenu(openId string) (interface{},error) {
         responseMessageMenu[i].Type = v.Type
         responseMessageMenu[i].TypeId = v.TypeId
         responseMessageMenu[i].IsRead = v.IsRead
-		//responseMessageMenu[i].ShowTime = v.ShowTime.Format("2006-01-02 15:04:05")
-		now := time.Now()
-		if now.Year() == v.ShowTime.Year() &&
-			now.Month() == v.ShowTime.Month() &&
-			now.Day() == v.ShowTime.Day() {
-			responseMessageMenu[i].ShowTime = v.ShowTime.Format("15:04")
-		}else if now.Year() == v.ShowTime.Year() &&
-			now.Month() == v.ShowTime.Month() &&
-			now.Day()-1 == v.ShowTime.Day() {
-			responseMessageMenu[i].ShowTime = v.ShowTime.Format("昨天 15:04")
-		}else if now.Year() == v.ShowTime.Year(){
-			responseMessageMenu[i].ShowTime = v.ShowTime.Format("01月02日")
-		}else{
-			responseMessageMenu[i].ShowTime = v.ShowTime.Format("2006年01月02日")
-		}
+		responseMessageMenu[i].ShowTime = common.FormatTime(v.ShowTime)
 	}
 	return responseMessageMenu,nil
 }

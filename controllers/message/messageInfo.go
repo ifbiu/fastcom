@@ -66,7 +66,7 @@ func (this *MessageInfoController) Get()  {
 		return
 	}
 
-	info, err := message.GetMessageInfo(theType, typeId, openId)
+	info, err := message.GetMessageInfo(theType, typeId)
 	if err != nil {
 		fmt.Println(err)
 		result := utils.ResultUtil{
@@ -78,7 +78,7 @@ func (this *MessageInfoController) Get()  {
 		return
 	}
 	result := utils.ResultDataUtil{
-		Code: 500,
+		Code: 200,
 		Data: info,
 	}
 	this.Data["json"] = &result
