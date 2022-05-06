@@ -41,7 +41,7 @@ func GetMessageInfo(theType int,typeId int) (interface{},error) {
 		}
 		if delId == 2 {
 			delMessage := delMessageResponse{}
-			err := o.Raw("SELECT member.name as del_user FROM notice join member on notice.del_user = member.openid WHERE notice.id=? and notice.del_user=member.openid", typeId).QueryRow(&delMessage)
+			err := o.Raw("SELECT member.name as del_user FROM notice join member on notice.del_user = member.openid WHERE notice.id=? and notice.organize_uuid=member.organize_uuid", typeId).QueryRow(&delMessage)
 			if err != nil {
 				return nil, err
 			}
