@@ -49,4 +49,5 @@ func init() {
 	beego.Router("/messageMenu", &message.MessageMenuController{})
 	beego.Router("/messageInfo", &message.MessageInfoController{})
 	beego.Router("/isAuthDel", &message.IsAuthDelController{})
+	beego.Router("/messageInfoDel", &message.MessageInfoDelController{})
 }
