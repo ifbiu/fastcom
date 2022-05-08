@@ -7,6 +7,7 @@ import (
 	"fastcom/utils"
 	"fmt"
 	"log"
+	"strconv"
 )
 
 type MessageMenuController struct {
@@ -15,8 +16,51 @@ type MessageMenuController struct {
 
 func (this *MessageMenuController) Get()  {
 	openId := this.GetString("openid")
-	if openId == "" {
-		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少参数：openid"}
+	pageStr := this.GetString("page")
+	pageSizeStr := this.GetString("pageSize")
+	if openId == "" || pageStr == "" || pageSizeStr == "" {
+		msg := ""
+		if openId == "" {
+			msg += "openid "
+		}
+		if pageStr == "" {
+			msg += "page "
+		}
+		if pageSizeStr == "" {
+			msg += "pageSize "
+		}
+		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少字段："+msg}
+		this.ServeJSON()
+		return
+	}
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		fmt.Println(err)
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "page格式错误",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil {
+		fmt.Println(err)
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "pageSize格式错误",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}
+	if page<0 {
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "page页数不能小于0！",
+		}
+		this.Data["json"] = &result
 		this.ServeJSON()
 		return
 	}
@@ -29,7 +73,7 @@ func (this *MessageMenuController) Get()  {
 		this.Redirect("/noAuth",302)
 		return
 	}
-	menu, err := message.GetMessageMenu(openId)
+	menu, err := message.GetMessageMenu(openId,page,pageSize)
 	if err != nil {
 		fmt.Println(err)
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "查询失败！"}

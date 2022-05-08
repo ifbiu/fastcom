@@ -25,10 +25,14 @@ type ResponseMessageMenu struct {
 
 }
 
-func GetMessageMenu(openId string) (interface{},error) {
+func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 	o := orm.NewOrm()
 	requestMessageMenu := []RequestMessageMenu{}
-	_,err := o.Raw("SELECT notice.title as title,organize.organize_name as organize_name,status.type as type,status.type_id as type_id,status.is_read as is_read,notice.create_time as show_time from status left join notice on status.type_id = notice.id left join organize on status.organize_uuid=organize.uuid where status.openid=? order by notice.create_time desc", openId).QueryRows(&requestMessageMenu)
+	pageRes := 0
+	if page>1 {
+		pageRes = pageSize*(page-1)
+	}
+	_,err := o.Raw("SELECT notice.title as title,organize.organize_name as organize_name,status.type as type,status.type_id as type_id,status.is_read as is_read,notice.create_time as show_time from status left join notice on status.type_id = notice.id left join organize on status.organize_uuid=organize.uuid where status.openid=? order by notice.create_time desc limit ?,?", openId,pageRes,pageSize).QueryRows(&requestMessageMenu)
 	if err != nil {
 		return nil,err
 	}
