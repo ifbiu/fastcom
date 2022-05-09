@@ -8,7 +8,7 @@ import (
 func SelectApprove(openid string,uuid string) (bool,error) {
 	o := orm.NewOrm()
 	var count = 0
-	err := o.Raw("SELECT count(id) from approve where organize_uuid = ? AND start_user=?",uuid,openid).QueryRow(&count)
+	err := o.Raw("SELECT count(id) from approve where organize_uuid = ? AND start_user=? AND is_approve=1",uuid,openid).QueryRow(&count)
 	if err != nil {
 		return false,err
 	}

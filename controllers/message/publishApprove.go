@@ -6,10 +6,12 @@ import (
 	"fastcom/controllers"
 	"fastcom/db"
 	"fastcom/logic/message"
+	"fastcom/logic/organize"
 	"fastcom/utils"
 	"fmt"
 	"github.com/streadway/amqp"
 	"log"
+	"strconv"
 )
 
 
@@ -49,6 +51,30 @@ func (this *PublishApproveController) Post()  {
 	}
 	if(!auth){
 		this.Redirect("/noAuth",302)
+		return
+	}
+
+	uuid, err := strconv.Atoi(publishParam.Uuid)
+	if err != nil {
+		fmt.Println(err)
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "uuid格式错误",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}
+	// 是否没有管理员权限
+	authOrganize, _ := organize.GetAuthOrganize(publishParam.Openid, uuid)
+
+	if authOrganize != nil{
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "抱歉，您已经在该组织中！",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
 		return
 	}
 
