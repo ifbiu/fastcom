@@ -52,6 +52,27 @@ func (this *PublishApproveController) Post()  {
 		return
 	}
 
+	selectApprove, err := message.SelectApprove(publishParam.Openid, publishParam.Uuid)
+	if err != nil {
+		fmt.Println(err)
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "服务异常！",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}
+	if selectApprove {
+		result := utils.ResultUtil{
+			Code: 200,
+			Msg: "审核中，请耐心等待...",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}
+
 	openids, err := message.SelectApproveOpenIds(publishParam.Uuid)
 	if err != nil {
 		fmt.Println(err)
@@ -133,7 +154,7 @@ func (this *PublishApproveController) Post()  {
 
 	result := utils.ResultUtil{
 		Code: 200,
-		Msg: "成功发布审核！",
+		Msg: "申请成功",
 	}
 	this.Data["json"] = &result
 	this.ServeJSON()
