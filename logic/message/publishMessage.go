@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func SelectOpenids(uuid string)([]string,error){
+func SelectOpenIds(uuid string)([]string,error){
 
 	var openids []string
 	o := orm.NewOrm()
