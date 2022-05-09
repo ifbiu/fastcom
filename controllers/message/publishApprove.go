@@ -66,7 +66,7 @@ func (this *PublishApproveController) Post()  {
 	if selectApprove {
 		result := utils.ResultUtil{
 			Code: 200,
-			Msg: "审核中，请耐心等待...",
+			Msg: "审核中...",
 		}
 		this.Data["json"] = &result
 		this.ServeJSON()
