@@ -79,6 +79,7 @@ func (this *PublishVoteController) Post()  {
 		this.ServeJSON()
 		return
 	}
+	fmt.Println(publishParam)
 	uuid, err := strconv.Atoi(publishParam.Uuid)
 	if err != nil {
 		fmt.Println(err)
