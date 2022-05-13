@@ -66,7 +66,7 @@ func (this *PublishMessageController) Post()  {
 		this.ServeJSON()
 		return
 	}
-	fmt.Println(publishParam)
+	log.Println(publishParam)
 	uuid, err := strconv.Atoi(publishParam.Uuid)
 	if err != nil {
 		fmt.Println(err)
