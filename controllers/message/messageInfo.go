@@ -66,7 +66,7 @@ func (this *MessageInfoController) Get()  {
 		return
 	}
 
-	info, err := message.GetMessageInfo(theType, typeId)
+	info, err := message.GetMessageInfo(theType, typeId,openId)
 	if err != nil {
 		fmt.Println(err)
 		result := utils.ResultUtil{

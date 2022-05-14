@@ -10,6 +10,11 @@ func IsAuthDel(theType int,typeId int,openId string) (int,error) {
 		if err != nil {
 			return 0, err
 		}
+	}else if theType==2 {
+		err := o.Raw("SELECT member.authority FROM vote left join member on vote.organize_uuid=member.organize_uuid WHERE member.openid=? and vote.id=?", openId, typeId).QueryRow(&res)
+		if err != nil {
+			return 0, err
+		}
 	}
 	return res,nil
 }
