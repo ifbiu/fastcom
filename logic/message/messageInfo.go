@@ -233,7 +233,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		}
 
 		// 未审核
-		if isApprove==1 {
+		if isApprove==0 {
 			approveRes := approveResponse1{}
 			approveOut := approveOutput1{}
 			err = o.Raw("SELECT user.image as image,user.nick_name as nick_name,organize.organize_name as organize_name FROM approve join user on approve.start_user = user.openid join organize on approve.organize_uuid = organize.uuid WHERE approve.id=?", typeId).QueryRow(&approveRes)
@@ -244,7 +244,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			approveOut.NickName = approveRes.NickName
 			approveOut.OrganizeName = approveRes.OrganizeName
 			return approveOut,nil
-		}else if isApprove==2 || isApprove==3 {	// 已审核通过
+		}else if isApprove==1 || isApprove==2 {	// 已审核通过
 			approveRes := approveResponse2{}
 			approveOut := approveOutput2{}
 			err = o.Raw("SELECT user.image as image,user.nick_name as nick_name,organize.organize_name as organize_name,approve.is_approve as is_approve,approve.approve_user as approve_user FROM approve join user on approve.start_user = user.openid join organize on approve.organize_uuid = organize.uuid WHERE approve.id=?", typeId).QueryRow(&approveRes)
