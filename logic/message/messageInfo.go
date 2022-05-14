@@ -23,6 +23,19 @@ type voteResponse struct {
 	CreateTime time.Time `json:"createTime"`
 }
 
+type approveResponse1 struct {
+	Image string `json:"image"`
+	NickName string `json:"nick_name"`
+	OrganizeName string `json:"organize_name"`
+}
+type approveResponse2 struct {
+	Image string `json:"image"`
+	NickName string `json:"nick_name"`
+	ApproveUser string `json:"approve_user"`
+	IsApprove int `json:"is_approve"`
+	OrganizeName string `json:"organize_name"`
+}
+
 type voteOutput1 struct {
 	Title string `json:"title"`
 	Content []string `json:"content"`
@@ -64,6 +77,20 @@ type messageOutput struct {
 	CreateUser string `json:"createUser"`
 	ReadCount int `json:"readCount"`
 	CreateTime string `json:"createTime"`
+}
+
+type approveOutput1 struct {
+	Image string `json:"image"`
+	NickName string `json:"nickName"`
+	OrganizeName string `json:"organizeName"`
+}
+
+type approveOutput2 struct {
+	Image string `json:"image"`
+	NickName string `json:"nickName"`
+	ApproveUser string `json:"approveUser"`
+	IsApprove int `json:"isApprove"`
+	OrganizeName string `json:"organizeName"`
 }
 
 func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
@@ -198,7 +225,39 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			return voteOut,nil
 		}
 	}else if theType == 3 { // 审核
+		isApprove := 0
 
+		err := o.Raw("SELECT is_approve FROM approve WHERE id=?", typeId).QueryRow(&isApprove)
+		if err != nil {
+			return nil, err
+		}
+
+		// 未审核
+		if isApprove==1 {
+			approveRes := approveResponse1{}
+			approveOut := approveOutput1{}
+			err = o.Raw("SELECT user.image as image,user.nick_name as nick_name,organize.organize_name as organize_name FROM approve join user on approve.start_user = user.openid join organize on approve.organize_uuid = organize.uuid WHERE approve.id=?", typeId).QueryRow(&approveRes)
+			if err != nil {
+				return nil, err
+			}
+			approveOut.Image = approveRes.Image
+			approveOut.NickName = approveRes.NickName
+			approveOut.OrganizeName = approveRes.OrganizeName
+			return approveOut,nil
+		}else if isApprove==2 || isApprove==3 {	// 已审核通过
+			approveRes := approveResponse2{}
+			approveOut := approveOutput2{}
+			err = o.Raw("SELECT user.image as image,user.nick_name as nick_name,organize.organize_name as organize_name,approve.is_approve as is_approve,approve.approve_user as approve_user FROM approve join user on approve.start_user = user.openid join organize on approve.organize_uuid = organize.uuid WHERE approve.id=?", typeId).QueryRow(&approveRes)
+			if err != nil {
+				return nil, err
+			}
+			approveOut.Image = approveRes.Image
+			approveOut.NickName = approveRes.NickName
+			approveOut.ApproveUser = approveRes.ApproveUser
+			approveOut.IsApprove = approveRes.IsApprove
+			approveOut.OrganizeName = approveRes.OrganizeName
+			return approveOut,nil
+		}
 	}
 
 	return []string{},nil
