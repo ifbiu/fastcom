@@ -251,9 +251,14 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			if err != nil {
 				return nil, err
 			}
+			var approveUser string
+			err := o.Raw("SELECT name FROM member WHERE openid=? AND organize_uuid=(SELECT organize_uuid FROM approve WHERE id=?)", approveRes.ApproveUser,typeId).QueryRow(&approveUser)
+			if err != nil {
+				return nil, err
+			}
 			approveOut.Image = approveRes.Image
 			approveOut.NickName = approveRes.NickName
-			approveOut.ApproveUser = approveRes.ApproveUser
+			approveOut.ApproveUser = approveUser
 			approveOut.IsApprove = approveRes.IsApprove
 			approveOut.OrganizeName = approveRes.OrganizeName
 			return approveOut,nil
