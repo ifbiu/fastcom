@@ -149,7 +149,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		if err != nil {
 			return nil, err
 		}
-		err = o.Raw("SELECT count(id) FROM vote_success WHERE id=? AND openid = ?", typeId,openId).QueryRow(&countVote)
+		err = o.Raw("SELECT count(id) FROM vote_success WHERE id=? AND openid = ? AND vote_item_id != 0", typeId,openId).QueryRow(&countVote)
 		if err != nil {
 			return nil, err
 		}

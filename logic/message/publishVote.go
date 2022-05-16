@@ -1,7 +1,10 @@
 package message
 
 import (
+	"fastcom/db"
 	"github.com/astaxie/beego/orm"
+	"log"
+	"strconv"
 	"time"
 )
 
@@ -38,5 +41,27 @@ func PublishVote(openid string,openids []string,uuid string,title string,maxNum 
 			}
 		}
 	}
+	key := "vote:"+strconv.Itoa(int(id))
+	rds, err := db.InitRedis()
+	if err != nil {
+		log.Panicln(err)
+		return false,err
+	}
+	exists, err := rds.Exists(key)
+	if err != nil {
+		return false, err
+	}
+	if exists {
+		return false,nil
+	}
+	//fmt.Println(endTime)
+	//fmt.Println(time.Now().Unix())
+	//t := endTime-time.Now().Unix()
+	//fmt.Println(time.Duration(t))
+	//fmt.Println(t)
+	//err = rds.Set(key,id, time.Duration(t*1000))
+	//if err != nil {
+	//	return false, err
+	//}
 	return true,nil
 }
