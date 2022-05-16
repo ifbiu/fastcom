@@ -28,7 +28,7 @@ func (this *VoteOperationController) Post()  {
 	if publishParam.OpenId=="" ||
 		publishParam.Vote=="" ||
 		publishParam.TypeId=="" ||
-		len(publishParam.SerialIds)==0  {
+		(len(publishParam.SerialIds)==0 && publishParam.Vote == "1")  {
 		var (
 			isOpenId = ""
 			isVote = ""
@@ -44,7 +44,7 @@ func (this *VoteOperationController) Post()  {
 		if publishParam.TypeId=="" {
 			isTypeId = "typeId "
 		}
-		if len(publishParam.SerialIds)==0 {
+		if len(publishParam.SerialIds)==0 && publishParam.Vote == "1"{
 			isSerialIds = "serialIds "
 		}
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少必传参数："+isOpenId+isVote+isTypeId+isSerialIds}
