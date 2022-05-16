@@ -20,6 +20,7 @@ type voteResponse struct {
 	Title string `json:"title"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
+	MaxNum int `json:"max_num"`
 	CreateTime time.Time `json:"createTime"`
 }
 
@@ -41,6 +42,7 @@ type voteOutput1 struct {
 	Content []string `json:"content"`
 	VoteType int `json:"type"`
 	IsEnd int `json:"isEnd"`
+	MaxNum int `json:"maxNum"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
@@ -156,7 +158,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			if countVote == 0 {	// 未投
 				voteRes := voteResponse{}
 				var voteNotEndTrueContent []string
-				err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+				err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.max_num as max_num FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 				if err != nil {
 					return nil, err
 				}
@@ -171,6 +173,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 				voteOut.Content = voteNotEndTrueContent
 				voteOut.OrganizeName = voteRes.OrganizeName
 				voteOut.CreateUser = voteRes.CreateUser
+				voteOut.MaxNum = voteRes.MaxNum
 				voteOut.CreateTime =voteRes.CreateTime.Format("2006年01月02日 15:04")
 				return voteOut,nil
 			}else{	// 已投
