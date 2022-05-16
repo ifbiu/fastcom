@@ -18,8 +18,9 @@ func PublishVote(openid string,openids []string,uuid string,title string,maxNum 
 	if err != nil {
 		return false, err
 	}
-	for _, item := range items {
-		_, err := o.Raw("INSERT INTO vote_item (vote_id,content) VALUES (?,?)",id,item).Exec()
+	for i, item := range items {
+		index := i+1
+		_, err := o.Raw("INSERT INTO vote_item (vote_id,serial_id,content) VALUES (?,?,?)",id,index,item).Exec()
 		if err != nil {
 			return false, err
 		}
@@ -28,6 +29,13 @@ func PublishVote(openid string,openids []string,uuid string,title string,maxNum 
 		_, err := o.Raw("INSERT INTO status (openid,organize_uuid,type,type_id,is_read,create_time) VALUES (?,?,?,?,?,?)",openidOne,uuid,2,id,1,now).Exec()
 		if err != nil {
 			return false, err
+		}
+		for i, _ := range items {
+			index := i+1
+			_, err := o.Raw("INSERT INTO vote_success (openid,vote_id,serial_id,vote_item_id) VALUES (?,?,?,?)",openidOne,id,index,0).Exec()
+			if err != nil {
+				return false, err
+			}
 		}
 	}
 	return true,nil

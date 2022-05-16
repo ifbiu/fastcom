@@ -55,4 +55,5 @@ func init() {
 	beego.Router("/publishVote", &message.PublishVoteController{})
 	beego.Router("/angleMark", &message.AngleMarkController{})
 	beego.Router("/adminApprove", &message.AdminApproveController{})
+	beego.Router("/voteOperation", &message.VoteOperationController{})
 }
