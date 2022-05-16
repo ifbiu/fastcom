@@ -78,6 +78,27 @@ func (this *PublishApproveController) Post()  {
 		return
 	}
 
+	//approve, err := message.InApprove(publishParam.Openid, publishParam.Uuid)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	result := utils.ResultUtil{
+	//		Code: 500,
+	//		Msg: "服务异常！",
+	//	}
+	//	this.Data["json"] = &result
+	//	this.ServeJSON()
+	//	return
+	//}
+	//if approve {
+	//	result := utils.ResultUtil{
+	//		Code: 200,
+	//		Msg: "审核中...",
+	//	}
+	//	this.Data["json"] = &result
+	//	this.ServeJSON()
+	//	return
+	//}
+
 	selectApprove, err := message.SelectApprove(publishParam.Openid, publishParam.Uuid)
 	if err != nil {
 		fmt.Println(err)
