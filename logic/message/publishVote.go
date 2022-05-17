@@ -54,14 +54,10 @@ func PublishVote(openid string,openids []string,uuid string,title string,maxNum 
 	if exists {
 		return false,nil
 	}
-	//fmt.Println(endTime)
-	//fmt.Println(time.Now().Unix())
-	//t := endTime-time.Now().Unix()
-	//fmt.Println(time.Duration(t))
-	//fmt.Println(t)
-	//err = rds.Set(key,id, time.Duration(t*1000))
-	//if err != nil {
-	//	return false, err
-	//}
+	t := time.Unix(endTime,0).Sub(time.Now())
+	err = rds.Set(key,id, t)
+	if err != nil {
+		return false, err
+	}
 	return true,nil
 }
