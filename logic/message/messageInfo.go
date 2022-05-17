@@ -215,7 +215,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 				return nil, err
 			}
 			endManualRes := endManualResponse{}
-			err = o.Raw("SELECT manual_user,manual_time from vote WHERE id = ?", typeId).QueryRow(&endManualRes)
+			err = o.Raw("SELECT member.name as manual_user,manual_time from vote join member on vote.manual_user = member.openid  WHERE vote.id = ? AND member.organize_uuid = vote.organize_uuid", typeId).QueryRow(&endManualRes)
 			if err != nil {
 				return nil, err
 			}
