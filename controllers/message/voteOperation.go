@@ -126,13 +126,24 @@ func (this *VoteOperationController) Post()  {
 		this.ServeJSON()
 		return
 	}
-	result := utils.ResultUtil{
-		Code: 200,
-		Msg: "投票成功",
+	if vote==1 {
+		result := utils.ResultUtil{
+			Code: 200,
+			Msg: "投票成功",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}else if vote==2 {
+		result := utils.ResultUtil{
+			Code: 200,
+			Msg: "弃票成功",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
 	}
-	this.Data["json"] = &result
-	this.ServeJSON()
-	return
+
 
 
 
