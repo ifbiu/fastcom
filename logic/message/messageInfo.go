@@ -1,6 +1,7 @@
 package message
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/orm"
 	"time"
 )
@@ -155,6 +156,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		if err != nil {
 			return nil, err
 		}
+		fmt.Println(countVote)
 		// 未截止
 		if isEnd==1 {
 			if countVote == 0 {	// 未投

@@ -27,13 +27,13 @@ func VoteOperation(openId string,vote int,typeId int,serialIds []int) (error) {
 	}
 	if vote==1 {
 		for _, serialId := range serialIds {
-			_,err := o.Raw("UPDATE vote_success SET vote_item_id=? WHERE openid=? AND vote_id=? AND serial_id=?",1,openId,typeId,serialId).Exec()
+			_,err := o.Raw("UPDATE vote_success SET vote_item_id=?,vote_time=now() WHERE openid=? AND vote_id=? AND serial_id=?",1,openId,typeId,serialId).Exec()
 			if err != nil {
 				return err
 			}
 		}
 	}else if vote==2 {
-		_,err := o.Raw("UPDATE vote_success SET vote_item_id=? WHERE openid=? AND vote_id=?",2,openId,typeId).Exec()
+		_,err := o.Raw("UPDATE vote_success SET vote_item_id=?,vote_time=now() WHERE openid=? AND vote_id=?",2,openId,typeId).Exec()
 		if err != nil {
 			return err
 		}
