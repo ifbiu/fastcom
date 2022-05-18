@@ -57,7 +57,7 @@ func AutoEndVote(typeId int) error {
 			return err
 		}
 	}
-	_,err = o.Raw("SELECT DISTINCT openid FROM vote_success WHERE vote_item_id<>0").QueryRows(&members)
+	_,err = o.Raw("SELECT DISTINCT openid FROM vote_success WHERE vote_item_id<>0 AND vote_id=?",typeId).QueryRows(&members)
 	if err != nil {
 		return err
 	}
