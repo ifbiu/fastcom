@@ -7,7 +7,6 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/streadway/amqp"
 	"log"
-	"math"
 	"strconv"
 )
 
@@ -39,13 +38,16 @@ func ManualEndVote(openId string,typeId int) (error) {
 		if err != nil {
 			return err
 		}
-		percentageNum, err := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(num) / float64(alreadyVoteNum)), 64)
-		if err != nil {
-			return err
-		}
-		fmt.Println(percentageNum)
-		if percentageNum == math.NaN() {
+		var percentageNum float64
+		fmt.Println(alreadyVoteNum)
+		fmt.Println(alreadyVoteNum == 0)
+		if alreadyVoteNum == 0 {
 			percentageNum = 0
+		}else{
+			percentageNum, err = strconv.ParseFloat(fmt.Sprintf("%.2f", float64(num) / float64(alreadyVoteNum)), 64)
+			if err != nil {
+				return err
+			}
 		}
 		_, err = o.Raw("INSERT INTO vote_result (vote_item_id,vote_num,vote_percentage,create_time) VALUES (?,?,?,now())",voteItemIds[i],num,percentageNum).Exec()
 		if err != nil {
