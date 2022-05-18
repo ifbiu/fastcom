@@ -238,7 +238,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			return voteOut,nil
 		}else if isEnd==3{ // 手动截止
 			voteRes := voteResponse{}
-			err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_timeFROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+			err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 			if err != nil {
 				return nil, err
 			}
