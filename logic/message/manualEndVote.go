@@ -39,8 +39,6 @@ func ManualEndVote(openId string,typeId int) (error) {
 			return err
 		}
 		var percentageNum float64
-		fmt.Println(alreadyVoteNum)
-		fmt.Println(alreadyVoteNum == 0)
 		if alreadyVoteNum == 0 {
 			percentageNum = 0
 		}else{
