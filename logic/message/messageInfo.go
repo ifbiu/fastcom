@@ -50,7 +50,7 @@ type voteOutput1 struct {
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
-	EndTime time.Time `json:"endTime"`
+	EndTime string `json:"endTime"`
 }
 type voteOutput2 struct {
 	Title string `json:"title"`
@@ -59,7 +59,7 @@ type voteOutput2 struct {
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
-	EndTime time.Time `json:"endTime"`
+	EndTime string `json:"endTime"`
 }
 
 type voteOutput3 struct {
@@ -71,7 +71,7 @@ type voteOutput3 struct {
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
-	EndTime time.Time `json:"endTime"`
+	EndTime string `json:"endTime"`
 }
 
 type endManualResponse struct {
@@ -206,6 +206,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 				voteOut.IsAbstained = voteRes.IsAbstained
 				voteOut.MaxNum = voteRes.MaxNum
 				voteOut.CreateTime =voteRes.CreateTime.Format("2006年01月02日 15:04")
+				voteOut.EndTime =voteRes.EndTime.Format("2006年01月02日 15:04")
 				return voteOut,nil
 			}else{	// 已投
 				voteRes := voteResponse{}
@@ -220,6 +221,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 				voteOut.OrganizeName = voteRes.OrganizeName
 				voteOut.CreateUser = voteRes.CreateUser
 				voteOut.CreateTime =voteRes.CreateTime.Format("2006年01月02日 15:04")
+				voteOut.EndTime =voteRes.EndTime.Format("2006年01月02日 15:04")
 				return voteOut,nil
 			}
 		}else if isEnd==2 {	// 自动截止
@@ -235,6 +237,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			voteOut.OrganizeName = voteRes.OrganizeName
 			voteOut.CreateUser = voteRes.CreateUser
 			voteOut.CreateTime =voteRes.CreateTime.Format("2006年01月02日 15:04")
+			voteOut.EndTime =voteRes.EndTime.Format("2006年01月02日 15:04")
 			return voteOut,nil
 		}else if isEnd==3{ // 手动截止
 			voteRes := voteResponse{}
@@ -256,6 +259,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			voteOut.OrganizeName = voteRes.OrganizeName
 			voteOut.CreateUser = voteRes.CreateUser
 			voteOut.CreateTime =voteRes.CreateTime.Format("2006年01月02日 15:04")
+			voteOut.EndTime =voteRes.EndTime.Format("2006年01月02日 15:04")
 			return voteOut,nil
 		}
 	}else if theType == 3 { // 审核
