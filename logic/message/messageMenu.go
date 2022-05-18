@@ -83,6 +83,18 @@ func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 			responseMessageMenu[i].TypeId = requestMessageMenu.TypeId
 			responseMessageMenu[i].IsRead = requestMessageMenu.IsRead
 			responseMessageMenu[i].ShowTime = common.FormatTime(requestMessageMenu.ShowTime)
+		}else if message.Type==4{
+			requestMessageMenu := RequestMessageMenu{}
+			err = o.Raw("SELECT vote.title as title,organize.organize_name as organize_name,status.type as type,status.type_id as type_id,status.is_read as is_read,vote.create_time as show_time from status left join vote on status.type_id = vote.id left join organize on status.organize_uuid=organize.uuid where status.id=?",message.Id).QueryRow(&requestMessageMenu)
+			if err != nil {
+				return nil,err
+			}
+			responseMessageMenu[i].Type = requestMessageMenu.Type
+			responseMessageMenu[i].OrganizeName = requestMessageMenu.OrganizeName
+			responseMessageMenu[i].Type = requestMessageMenu.Type
+			responseMessageMenu[i].TypeId = requestMessageMenu.TypeId
+			responseMessageMenu[i].IsRead = requestMessageMenu.IsRead
+			responseMessageMenu[i].ShowTime = common.FormatTime(requestMessageMenu.ShowTime)
 		}
 
 	}
