@@ -89,7 +89,7 @@ func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 			if err != nil {
 				return nil,err
 			}
-			responseMessageMenu[i].Type = requestMessageMenu.Type
+			responseMessageMenu[i].Title = requestMessageMenu.Title
 			responseMessageMenu[i].OrganizeName = requestMessageMenu.OrganizeName
 			responseMessageMenu[i].Type = requestMessageMenu.Type
 			responseMessageMenu[i].TypeId = requestMessageMenu.TypeId
