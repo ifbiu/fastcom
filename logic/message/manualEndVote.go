@@ -17,12 +17,14 @@ func ManualEndVote(openId string,typeId int) (error) {
 	var members []string
 	_, err := o.Raw("UPDATE vote SET is_end=3,manual_user=?,manual_time=now() WHERE id=?", openId,typeId).Exec()
 	if err != nil {
+		fmt.Println("99999999999")
 		return err
 	}
 	var voteItemIds []int
 	var alreadyVoteNum int
 	_, err = o.Raw("SELECT id FROM vote_item WHERE vote_id=?",typeId).QueryRows(&voteItemIds)
 	if err != nil {
+		fmt.Println("888888888")
 		return err
 	}
 	if len(voteItemIds)==0 {
@@ -30,6 +32,7 @@ func ManualEndVote(openId string,typeId int) (error) {
 	}
 	err = o.Raw("SELECT count(id) FROM vote_success WHERE vote_id=? AND vote_item_id=1 ORDER BY serial_id",typeId).QueryRow(&alreadyVoteNum)
 	if err != nil {
+		fmt.Println("77777777777")
 		return err
 	}
 	for i := 0; i < len(voteItemIds); i++ {
@@ -52,15 +55,18 @@ func ManualEndVote(openId string,typeId int) (error) {
 	}
 	_,err = o.Raw("SELECT DISTINCT openid FROM vote_success WHERE vote_item_id<>0").QueryRows(&members)
 	if err != nil {
+		fmt.Println("444444444")
 		return err
 	}
 	err = publishVoteResult(members)
 	if err != nil {
+		fmt.Println("5555555")
 		return err
 	}
 	for _, openid := range members {
 		_, err := o.Raw("INSERT INTO status (openid,organize_uuid,type,type_id,is_read,create_time) VALUES (?,(SELECT organize_uuid FROM vote WHERE id=?),4,?,1,now())",openid,typeId,typeId).Exec()
 		if err != nil {
+			fmt.Println("66666666666666")
 			return err
 		}
 	}
