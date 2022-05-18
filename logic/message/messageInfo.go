@@ -23,6 +23,7 @@ type voteResponse struct {
 	IsAbstained int `json:"isAbstained"`
 	MaxNum int `json:"maxNum"`
 	CreateTime time.Time `json:"createTime"`
+	EndTime time.Time `json:"endTime"`
 }
 
 type approveResponse1 struct {
@@ -48,6 +49,7 @@ type voteOutput1 struct {
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
+	EndTime time.Time `json:"endTime"`
 }
 type voteOutput2 struct {
 	Title string `json:"title"`
@@ -56,6 +58,7 @@ type voteOutput2 struct {
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
+	EndTime time.Time `json:"endTime"`
 }
 
 type voteOutput3 struct {
@@ -67,6 +70,7 @@ type voteOutput3 struct {
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
+	EndTime time.Time `json:"endTime"`
 }
 
 type endManualResponse struct {
@@ -160,7 +164,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			if countVote == 0 {	// 未投
 				voteRes := voteResponse{}
 				var voteNotEndTrueContent []string
-				err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.max_num as max_num,vote.is_abstained as is_abstained FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+				err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time,vote.max_num as max_num,vote.is_abstained as is_abstained FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 				if err != nil {
 					return nil, err
 				}
@@ -181,7 +185,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 				return voteOut,nil
 			}else{	// 已投
 				voteRes := voteResponse{}
-				err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+				err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 				if err != nil {
 					return nil, err
 				}
@@ -196,7 +200,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			}
 		}else if isEnd==2 {	// 自动截止
 			voteRes := voteResponse{}
-			err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+			err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 			if err != nil {
 				return nil, err
 			}
@@ -210,7 +214,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			return voteOut,nil
 		}else if isEnd==3{ // 手动截止
 			voteRes := voteResponse{}
-			err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+			err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_timeFROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 			if err != nil {
 				return nil, err
 			}
