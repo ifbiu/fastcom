@@ -38,7 +38,7 @@ func AutoEndVote(typeId int) error {
 		return err
 	}
 	for i := 0; i < len(voteItemIds); i++ {
-		var num int
+		num := 0
 		err = o.Raw("SELECT count(id) FROM vote_success WHERE vote_id=? AND vote_item_id=1 AND serial_id=? ORDER BY serial_id",typeId,i+1).QueryRow(&num)
 		if err != nil {
 			return err
