@@ -36,14 +36,17 @@ func ManualEndVote(openId string,typeId int) (error) {
 		var num int
 		err = o.Raw("SELECT count(id) FROM vote_success WHERE vote_id=? AND vote_item_id=1 AND serial_id=? ORDER BY serial_id",typeId,i+1).QueryRow(&num)
 		if err != nil {
+			fmt.Println("11111111")
 			return err
 		}
 		percentageNum, err := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(num) / float64(alreadyVoteNum)), 64)
 		if err != nil {
+			fmt.Println("333333333")
 			return err
 		}
 		_, err = o.Raw("INSERT INTO vote_result (vote_item_id,vote_num,vote_percentage,create_time) VALUES (?,?,?,now())",voteItemIds[i],num,percentageNum).Exec()
 		if err != nil {
+			fmt.Println("22222222")
 			return err
 		}
 	}
