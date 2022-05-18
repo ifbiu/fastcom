@@ -46,6 +46,8 @@ type voteOutput1 struct {
 	VoteType int `json:"type"`
 	IsEnd int `json:"isEnd"`
 	MaxNum int `json:"maxNum"`
+	VoteNum int `json:"voteNum"`
+	IsVoteNum int `json:"isVoteNum"`
 	IsAbstained int `json:"isAbstained"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
@@ -56,6 +58,8 @@ type voteOutput2 struct {
 	Title string `json:"title"`
 	VoteType int `json:"type"`
 	IsEnd int `json:"isEnd"`
+	VoteNum int `json:"voteNum"`
+	IsVoteNum int `json:"isVoteNum"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
@@ -66,6 +70,8 @@ type voteOutput3 struct {
 	Title string `json:"title"`
 	VoteType int `json:"type"`
 	IsEnd int `json:"isEnd"`
+	VoteNum int `json:"voteNum"`
+	IsVoteNum int `json:"isVoteNum"`
 	ManualUser string `json:"manualUser"`
 	ManualTime string `json:"manualTime"`
 	OrganizeName string `json:"organizeName"`
@@ -175,11 +181,21 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		}
 		isEnd :=0
 		countVote := 0
+		isVoteNum := 0
+		voteNum := 0
 		err = o.Raw("SELECT is_end FROM vote WHERE id=?", typeId).QueryRow(&isEnd)
 		if err != nil {
 			return nil, err
 		}
 		err = o.Raw("SELECT count(id) FROM vote_success WHERE vote_id=? AND openid = ? AND vote_item_id != 0", typeId,openId).QueryRow(&countVote)
+		if err != nil {
+			return nil, err
+		}
+		err = o.Raw("SELECT count(DISTINCT openid) FROM vote_success WHERE vote_item_id<>0 AND vote_id=?", typeId).QueryRow(&isVoteNum)
+		if err != nil {
+			return nil, err
+		}
+		err = o.Raw("SELECT count(DISTINCT openid) FROM vote_success WHERE vote_id=?", typeId).QueryRow(&voteNum)
 		if err != nil {
 			return nil, err
 		}
@@ -200,6 +216,8 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 				voteOut.Title = voteRes.Title
 				voteOut.VoteType = countVote
 				voteOut.IsEnd = isEnd
+				voteOut.VoteNum = voteNum
+				voteOut.IsVoteNum = isVoteNum
 				voteOut.Content = voteNotEndTrueContent
 				voteOut.OrganizeName = voteRes.OrganizeName
 				voteOut.CreateUser = voteRes.CreateUser
@@ -218,6 +236,8 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 				voteOut.Title = voteRes.Title
 				voteOut.VoteType = countVote
 				voteOut.IsEnd = isEnd
+				voteOut.VoteNum = voteNum
+				voteOut.IsVoteNum = isVoteNum
 				voteOut.OrganizeName = voteRes.OrganizeName
 				voteOut.CreateUser = voteRes.CreateUser
 				voteOut.CreateTime =voteRes.CreateTime.Format("2006年01月02日 15:04")
@@ -234,6 +254,8 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			voteOut.Title = voteRes.Title
 			voteOut.VoteType = countVote
 			voteOut.IsEnd = isEnd
+			voteOut.VoteNum = voteNum
+			voteOut.IsVoteNum = isVoteNum
 			voteOut.OrganizeName = voteRes.OrganizeName
 			voteOut.CreateUser = voteRes.CreateUser
 			voteOut.CreateTime =voteRes.CreateTime.Format("2006年01月02日 15:04")
@@ -254,6 +276,8 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			voteOut.Title = voteRes.Title
 			voteOut.VoteType = countVote
 			voteOut.IsEnd = isEnd
+			voteOut.VoteNum = voteNum
+			voteOut.IsVoteNum = isVoteNum
 			voteOut.ManualUser = endManualRes.ManualUser
 			voteOut.ManualTime = endManualRes.ManualTime.Format("2006年01月02日 15:04")
 			voteOut.OrganizeName = voteRes.OrganizeName
