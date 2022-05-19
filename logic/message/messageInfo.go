@@ -2,7 +2,9 @@ package message
 
 import (
 	"errors"
+	"fmt"
 	"github.com/astaxie/beego/orm"
+	"strconv"
 	"time"
 )
 
@@ -122,6 +124,12 @@ type voteResultOutput struct {
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
 	EndTime string `json:"endTime"`
+	VoteNumY int `json:"voteNumY"`
+	VotePercentageY float64 `json:"votePercentageY"`
+	VoteNumN int `json:"voteNumN"`
+	VotePercentageN float64 `json:"votePercentageN"`
+	VoteNumA int `json:"voteNumA"`
+	VotePercentageA float64 `json:"votePercentageA"`
 	VoteResult []voteResultFull `json:"voteResult"`
 }
 
@@ -327,6 +335,10 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		}
 	}else if theType == 4{
 		var voteItemIds []int
+		var voteNumY,voteNumN,voteNumA,voteNumAll int
+		var votePercentageY,votePercentageN,votePercentageA float64
+		var voteNumNArr []string
+		var voteNumAArr []string
 		voteRes := voteResultResponse{}
 		voteOut := voteResultOutput{}
 		err := o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
@@ -340,6 +352,44 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		if len(voteItemIds)==0 {
 			return nil,errors.New("投票项空值")
 		}
+		// 总人数
+		err = o.Raw("SELECT count(DISTINCT openid) FROM vote_success WHERE vote_id=?", typeId).QueryRow(&voteNumAll)
+		if err != nil {
+			return nil, err
+		}
+		// 已投票人数
+		err = o.Raw("SELECT count(DISTINCT openid) FROM vote_success WHERE vote_id=? AND vote_item_id<>0", typeId).QueryRow(&voteNumY)
+		if err != nil {
+			return nil, err
+		}
+		// 未投票人数
+		_,err = o.Raw("SELECT openid FROM vote_success WHERE vote_id = ? AND vote_item_id = 0 GROUP BY openid HAVING count( openid )=(select count(DISTINCT serial_id) from vote_success where vote_id=?)", typeId,typeId).QueryRows(&voteNumNArr)
+		if err != nil {
+			return nil, err
+		}
+		voteNumN = len(voteNumNArr)
+
+		// 弃票人数
+		_,err = o.Raw("SELECT openid FROM vote_success WHERE vote_id = ? AND vote_item_id = 2 GROUP BY openid HAVING count( openid )=(select count(DISTINCT serial_id) from vote_success where vote_id=?)", typeId,typeId).QueryRows(&voteNumAArr)
+		if err != nil {
+			return nil, err
+		}
+		voteNumA = len(voteNumAArr)
+
+		// 百分比
+		votePercentageY, err = strconv.ParseFloat(fmt.Sprintf("%.2f", float64(voteNumY) / float64(voteNumAll)), 64)
+		if err != nil {
+			return nil,err
+		}
+		votePercentageN, err = strconv.ParseFloat(fmt.Sprintf("%.2f", float64(voteNumN) / float64(voteNumAll)), 64)
+		if err != nil {
+			return nil,err
+		}
+		votePercentageA, err = strconv.ParseFloat(fmt.Sprintf("%.2f", float64(voteNumA) / float64(voteNumAll)), 64)
+		if err != nil {
+			return nil,err
+		}
+
 		voteResultAll := make([]voteResultFull,len(voteItemIds))
 		for i, id := range voteItemIds {
 			voteResult := voteResultFull{}
@@ -352,6 +402,12 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		voteOut.Title = voteRes.Title
 		voteOut.OrganizeName = voteRes.OrganizeName
 		voteOut.CreateUser = voteRes.CreateUser
+		voteOut.VoteNumY = voteNumY
+		voteOut.VoteNumN = voteNumN
+		voteOut.VoteNumA = voteNumA
+		voteOut.VotePercentageY = votePercentageY
+		voteOut.VotePercentageN = votePercentageN
+		voteOut.VotePercentageA = votePercentageA
 		voteOut.CreateTime = voteRes.CreateTime.Format("2006年01月02日 15:04")
 		voteOut.EndTime = voteRes.EndTime.Format("2006年01月02日 15:04")
 		voteOut.VoteResult = voteResultAll
