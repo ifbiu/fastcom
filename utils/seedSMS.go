@@ -95,7 +95,7 @@ func SeedSMS(phone string,code string) {
 	}
 	// 非SDK异常，直接失败。实际代码中可以加入其他的处理。
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	b, _ := json.Marshal(response.Response)
 	// 打印返回的json字符串
