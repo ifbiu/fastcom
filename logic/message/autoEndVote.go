@@ -34,7 +34,7 @@ func AutoEndVote(typeId int) error {
 	if len(voteItemIds)==0 {
 		return errors.New("投票项空值")
 	}
-	err = o.Raw("SELECT count(id) FROM vote_success WHERE vote_id=? AND vote_item_id=1 ORDER BY serial_id",typeId).QueryRow(&alreadyVoteNum)
+	err = o.Raw("SELECT count(id) FROM vote_success WHERE vote_id=?",typeId).QueryRow(&alreadyVoteNum)
 	if err != nil {
 		fmt.Println("22222")
 		return err
