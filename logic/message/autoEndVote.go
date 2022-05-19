@@ -28,7 +28,6 @@ func AutoEndVote(typeId int) error {
 	var alreadyVoteNum int
 	_, err = o.Raw("SELECT id FROM vote_item WHERE vote_id=?",typeId).QueryRows(&voteItemIds)
 	if err != nil {
-		fmt.Println("11111")
 		return err
 	}
 	if len(voteItemIds)==0 {
@@ -36,18 +35,16 @@ func AutoEndVote(typeId int) error {
 	}
 	err = o.Raw("SELECT count(id) FROM vote_success WHERE vote_id=?",typeId).QueryRow(&alreadyVoteNum)
 	if err != nil {
-		fmt.Println("22222")
 		return err
 	}
 	for i := 0; i < len(voteItemIds); i++ {
 		num := 0
 		err = o.Raw("SELECT count(id) FROM vote_success WHERE vote_id=? AND vote_item_id=1 AND serial_id=? ORDER BY serial_id",typeId,i+1).QueryRow(&num)
 		if err != nil {
-			fmt.Println("33333")
 			return err
 		}
 		var percentageNum float64
-		if alreadyVoteNum == 0 {
+		if alreadyVoteNum == 0 || num==0 {
 			percentageNum = 0
 		}else{
 			percentageNum, err = strconv.ParseFloat(fmt.Sprintf("%.2f", float64(num) / float64(alreadyVoteNum)), 64)
@@ -57,24 +54,20 @@ func AutoEndVote(typeId int) error {
 		}
 		_, err = o.Raw("INSERT INTO vote_result (vote_item_id,vote_num,vote_percentage,create_time) VALUES (?,?,?,now())",voteItemIds[i],num,percentageNum).Exec()
 		if err != nil {
-			fmt.Println("44444")
 			return err
 		}
 	}
 	_,err = o.Raw("SELECT DISTINCT openid FROM vote_success WHERE vote_item_id<>0 AND vote_id=?",typeId).QueryRows(&members)
 	if err != nil {
-		fmt.Println("555555")
 		return err
 	}
 	err = publishVoteResult(members)
 	if err != nil {
-		fmt.Println("666666")
 		return err
 	}
 	for _, openid := range members {
 		_, err := o.Raw("INSERT INTO status (openid,organize_uuid,type,type_id,is_read,create_time) VALUES (?,(SELECT organize_uuid FROM vote WHERE id=?),4,?,1,now())",openid,typeId,typeId).Exec()
 		if err != nil {
-			fmt.Println("7777777")
 			return err
 		}
 	}
