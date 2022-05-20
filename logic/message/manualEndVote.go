@@ -47,7 +47,7 @@ func ManualEndVote(openId string,typeId int) (error) {
 				return err
 			}
 		}
-		_, err = o.Raw("INSERT INTO vote_result (vote_item_id,vote_num,vote_percentage,create_time) VALUES (?,?,?,now())",voteItemIds[i],num,percentageNum).Exec()
+		_, err = o.Raw("INSERT INTO vote_result (vote_id,vote_item_id,vote_num,vote_percentage,create_time) VALUES (?,?,?,?,now())",typeId,voteItemIds[i],num,percentageNum).Exec()
 		if err != nil {
 			return err
 		}
