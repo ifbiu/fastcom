@@ -412,6 +412,18 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		voteOut.EndTime = voteRes.EndTime.Format("2006年01月02日 15:04")
 		voteOut.VoteResult = voteResultAll
 		return voteOut,nil
+	}else if theType ==5 {
+		approveRes := approveResponse2{}
+		approveOut := approveOutput2{}
+		err = o.Raw("SELECT user.image as image,user.nick_name as nick_name,organize.organize_name as organize_name,approve.is_approve as is_approve,approve.approve_user as approve_user FROM approve join user on approve.start_user = user.openid join organize on approve.organize_uuid = organize.uuid WHERE approve.id=?", typeId).QueryRow(&approveRes)
+		if err != nil {
+			return nil, err
+		}
+		approveOut.Image = approveRes.Image
+		approveOut.NickName = approveRes.NickName
+		approveOut.IsApprove = approveRes.IsApprove
+		approveOut.OrganizeName = approveRes.OrganizeName
+		return approveOut,nil
 	}
 
 	return []string{},nil

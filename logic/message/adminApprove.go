@@ -1,8 +1,12 @@
 package message
 
-import "github.com/astaxie/beego/orm"
+import (
+	"fastcom/common"
+	"github.com/astaxie/beego/orm"
+)
 
 func AdminApprove(openId string,typeId int,approve int) (error) {
+	var openidRes string
 	o := orm.NewOrm()
 	_ , err := o.Raw("UPDATE approve SET is_approve=?,approve_user=?,approve_time=now() WHERE id=?", approve,openId,typeId).Exec()
 	if err != nil {
@@ -13,6 +17,20 @@ func AdminApprove(openId string,typeId int,approve int) (error) {
 		if err != nil {
 			return err
 		}
+	}
+	err = o.Raw("SELECT start_user FROM approve WHERE id=?", typeId).QueryRow(&openidRes)
+	if err != nil {
+		return err
+	}
+	_, err = o.Raw("INSERT INTO status (openid,organize_uuid,type,type_id,is_read,create_time) VALUES (?,(SELECT organize_uuid FROM approve WHERE id=?),?,?,?,now())",openidRes,typeId,5,typeId,1).Exec()
+	if err != nil {
+		return err
+	}
+	var openids []string
+	openids = append(openids,openidRes)
+	err = common.AmqpMessage(openids)
+	if err != nil {
+		return err
 	}
 	return nil
 }

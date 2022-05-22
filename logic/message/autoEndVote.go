@@ -2,6 +2,7 @@ package message
 
 import (
 	"errors"
+	"fastcom/common"
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	"strconv"
@@ -61,7 +62,7 @@ func AutoEndVote(typeId int) error {
 	if err != nil {
 		return err
 	}
-	err = publishVoteResult(members)
+	err = common.AmqpMessage(members)
 	if err != nil {
 		return err
 	}

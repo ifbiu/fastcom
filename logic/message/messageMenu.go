@@ -47,7 +47,7 @@ func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 
 	responseMessageMenu := make([]ResponseMessageMenu,len(selectMessage))
 	for i, message := range selectMessage {
-		if message.Type==1 {
+		if message.Type==1 { // 公告
 			requestMessageMenu := RequestMessageMenu{}
 			err = o.Raw("SELECT notice.title as title,organize.organize_name as organize_name,status.type as type,status.type_id as type_id,status.is_read as is_read,notice.create_time as show_time from status left join notice on status.type_id = notice.id left join organize on status.organize_uuid=organize.uuid where status.id=?",message.Id).QueryRow(&requestMessageMenu)
 			if err != nil {
@@ -59,7 +59,7 @@ func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 		    responseMessageMenu[i].TypeId = requestMessageMenu.TypeId
 		    responseMessageMenu[i].IsRead = requestMessageMenu.IsRead
 			responseMessageMenu[i].ShowTime = common.FormatTime(requestMessageMenu.ShowTime)
-		}else if message.Type==2 {
+		}else if message.Type==2 { // 投票
 			requestMessageMenu := RequestMessageMenu{}
 			err = o.Raw("SELECT vote.title as title,organize.organize_name as organize_name,status.type as type,status.type_id as type_id,status.is_read as is_read,vote.create_time as show_time from status left join vote on status.type_id = vote.id left join organize on status.organize_uuid=organize.uuid where status.id=?",message.Id).QueryRow(&requestMessageMenu)
 			if err != nil {
@@ -71,25 +71,37 @@ func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 			responseMessageMenu[i].TypeId = requestMessageMenu.TypeId
 			responseMessageMenu[i].IsRead = requestMessageMenu.IsRead
 			responseMessageMenu[i].ShowTime = common.FormatTime(requestMessageMenu.ShowTime)
-		}else if message.Type==3 {
+		}else if message.Type==3 { // 审核
 			requestMessageMenu := RequestMessageMenu{}
 			err = o.Raw("SELECT organize.organize_name as organize_name,status.type as type,status.type_id as type_id,status.is_read as is_read,approve.create_time as show_time from status left join approve on status.type_id = approve.id left join organize on status.organize_uuid=organize.uuid where status.id=?",message.Id).QueryRow(&requestMessageMenu)
 			if err != nil {
 				return nil,err
 			}
-			responseMessageMenu[i].Title = "加入组织审核"
+			responseMessageMenu[i].Title = "加入组织申请"
 			responseMessageMenu[i].OrganizeName = requestMessageMenu.OrganizeName
 			responseMessageMenu[i].Type = requestMessageMenu.Type
 			responseMessageMenu[i].TypeId = requestMessageMenu.TypeId
 			responseMessageMenu[i].IsRead = requestMessageMenu.IsRead
 			responseMessageMenu[i].ShowTime = common.FormatTime(requestMessageMenu.ShowTime)
-		}else if message.Type==4{
+		}else if message.Type==4{ // 投票结果
 			requestMessageMenu := RequestMessageMenu{}
 			err = o.Raw("SELECT vote.title as title,organize.organize_name as organize_name,status.type as type,status.type_id as type_id,status.is_read as is_read,vote_result.create_time as show_time from status left join vote on status.type_id = vote.id left join organize on status.organize_uuid=organize.uuid left join vote_result on vote.id=vote_result.vote_id where status.id=?",message.Id).QueryRow(&requestMessageMenu)
 			if err != nil {
 				return nil,err
 			}
 			responseMessageMenu[i].Title = requestMessageMenu.Title
+			responseMessageMenu[i].OrganizeName = requestMessageMenu.OrganizeName
+			responseMessageMenu[i].Type = requestMessageMenu.Type
+			responseMessageMenu[i].TypeId = requestMessageMenu.TypeId
+			responseMessageMenu[i].IsRead = requestMessageMenu.IsRead
+			responseMessageMenu[i].ShowTime = common.FormatTime(requestMessageMenu.ShowTime)
+		}else if message.Type==5{ // 审核结果
+			requestMessageMenu := RequestMessageMenu{}
+			err = o.Raw("SELECT organize.organize_name as organize_name,status.type as type,status.type_id as type_id,status.is_read as is_read,approve.approve_time as show_time from status left join approve on status.type_id = approve.id left join organize on status.organize_uuid=organize.uuid where status.id=?",message.Id).QueryRow(&requestMessageMenu)
+			if err != nil {
+				return nil,err
+			}
+			responseMessageMenu[i].Title = "加入组织审核结果"
 			responseMessageMenu[i].OrganizeName = requestMessageMenu.OrganizeName
 			responseMessageMenu[i].Type = requestMessageMenu.Type
 			responseMessageMenu[i].TypeId = requestMessageMenu.TypeId
