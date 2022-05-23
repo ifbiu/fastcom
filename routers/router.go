@@ -61,4 +61,5 @@ func init() {
 	beego.Router("/autoEndVote", &message.AutoEndVoteController{})
 	beego.Router("/isPartakeVote", &organize.IsPartakeVoteController{})
 	beego.Router("/historyMessage", &organize.HistoryMessageController{})
+	beego.Router("/historyInfo", &organize.HistoryInfoController{})
 }
