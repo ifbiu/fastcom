@@ -59,4 +59,5 @@ func init() {
 	beego.Router("/voteAuth", &message.VoteAuthController{})
 	beego.Router("/manualEndVote", &message.ManualEndVoteController{})
 	beego.Router("/autoEndVote", &message.AutoEndVoteController{})
+	beego.Router("/isPartakeVote", &organize.IsPartakeVoteController{})
 }
