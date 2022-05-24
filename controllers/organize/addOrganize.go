@@ -67,8 +67,16 @@ func (this *AddOrganizeController) Post()  {
 		this.Redirect("/noAuth",302)
 		return
 	}
-	uuid, err := strconv.Atoi(utils.GenerateNum(10))
+	uuidStr, err := organize.GenerateUuid()
 	if err != nil {
+		fmt.Println(err)
+		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "生成uuid失败！"}
+		this.ServeJSON()
+		return
+	}
+	uuid, err := strconv.Atoi(uuidStr)
+	if err != nil {
+		fmt.Println(err)
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "生成uuid失败！"}
 		this.ServeJSON()
 		return

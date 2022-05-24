@@ -11,9 +11,9 @@ require (
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.19.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
-	github.com/shopspring/decimal v1.3.1
 	github.com/streadway/amqp v1.0.0
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.382
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.382
+	github.com/wxnacy/wgo v1.0.4
 	google.golang.org/appengine v1.6.7 // indirect
 )

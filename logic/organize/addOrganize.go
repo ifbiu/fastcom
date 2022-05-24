@@ -1,9 +1,40 @@
 package organize
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/orm"
+	"github.com/wxnacy/wgo/arrays"
+	"math/rand"
+	"strconv"
 	"time"
 )
+
+func GenerateUuid() (string,error) {
+	var resStr string
+	var uuids []int64
+	o := orm.NewOrm()
+	res1 := fmt.Sprintf("%06v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
+	res2 := fmt.Sprintf("%06v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
+	resStr = res1+res2[:4]
+	_, err := o.Raw("SELECT uuid FROM organize").QueryRows(&uuids)
+	if err != nil {
+		return "",err
+	}
+	resInt, err := strconv.Atoi(resStr)
+	if err != nil {
+		return "", err
+	}
+	index := arrays.ContainsInt(uuids, int64(resInt))
+	if index == -1 {
+		return resStr,nil
+	} else {
+		uuid, err := GenerateUuid()
+		if err != nil {
+			return "", err
+		}
+		return uuid,nil
+	}
+}
 
 func AddOrganize(uuid int,maximum int,openid string,organizeName string,coverImg string,introduce string,authorName string) (bool,error) {
 	o := orm.NewOrm()
