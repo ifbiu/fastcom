@@ -44,7 +44,7 @@ func HistoryMessage(uuid int,theType int,page int,pageSize int) (interface{},err
 				fmt.Println("2222222")
 				return nil, err
 			}
-			err := o.Raw("SELECT member.name as create_user FROM notice JOIN member ON notice.create_user=member.openid WHERE notice.id=? AND member.organize_uuid=notice.organize_uuid",id).QueryRow(&createUser)
+			err := o.Raw("SELECT member.name as create_user FROM notice JOIN member ON notice.create_user=member.openid WHERE notice.id=?",id).QueryRow(&createUser)
 			if err != nil {
 				fmt.Println("3333333333")
 				return nil, err
