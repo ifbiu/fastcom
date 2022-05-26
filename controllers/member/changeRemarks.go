@@ -34,6 +34,7 @@ func (this *ChangeRemarksController) Get()  {
 		this.ServeJSON()
 		return
 	}
+	fmt.Println(uuidStr)
 	uuid, err := strconv.Atoi(uuidStr)
 	if err != nil {
 		fmt.Println(err)
@@ -45,6 +46,7 @@ func (this *ChangeRemarksController) Get()  {
 		this.ServeJSON()
 		return
 	}
+	fmt.Println(uuid)
 
 	auth, err := common.CheckAuth(openId)
 	if err != nil {
