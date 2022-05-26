@@ -41,7 +41,7 @@ func HistoryMessage(uuid int,theType int,page int,pageSize int) (interface{},err
 			if err != nil {
 				return nil, err
 			}
-			err := o.Raw("SELECT member.name as create_user FROM notice JOIN member ON notice.create_user=member.openid WHERE member.organize_uuid=notice.organize_uuid").QueryRow(&createUser)
+			err := o.Raw("SELECT member.name as create_user FROM notice JOIN member ON notice.create_user=member.openid WHERE notice.id=? AND member.organize_uuid=notice.organize_uuid",id).QueryRow(&createUser)
 			if err != nil {
 				return nil, err
 			}
@@ -50,7 +50,7 @@ func HistoryMessage(uuid int,theType int,page int,pageSize int) (interface{},err
 			if err != nil {
 				return nil, err
 			}
-			err := o.Raw("SELECT member.name as create_user FROM vote LEFT JOIN member ON vote.create_user=member.openid WHERE member.organize_uuid=vote.organize_uuid").QueryRow(&createUser)
+			err := o.Raw("SELECT member.name as create_user FROM vote LEFT JOIN member ON vote.create_user=member.openid WHERE vote.id=? AND member.organize_uuid=vote.organize_uuid",id).QueryRow(&createUser)
 			if err != nil {
 				return nil, err
 			}
