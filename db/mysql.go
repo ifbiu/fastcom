@@ -12,7 +12,11 @@ func init() {
 	driverName := beego.AppConfig.String("mysqlDriverName")
 
 	//注册数据库驱动
-	orm.RegisterDriver(driverName, orm.DRMySQL)
+	err := orm.RegisterDriver(driverName, orm.DRMySQL)
+	if err != nil {
+		log.Println("mysql not start!")
+		return
+	}
 
 	//数据库连接
 	user := beego.AppConfig.String("mysqlUser")
@@ -23,7 +27,7 @@ func init() {
 
 	//dbConn := "root:123456@tcp(127.0.0.1:3306)/test?charset=utf8"
 	dbConn := user + ":" + pwd + "@tcp(" + host + ":" + port + ")/" + dbname + "?charset=utf8"
-	err := orm.RegisterDataBase("default", driverName, dbConn)
+	err = orm.RegisterDataBase("default", driverName, dbConn)
 	if err != nil {
 		log.Println("mysql connect error!")
 		return

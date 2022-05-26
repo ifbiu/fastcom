@@ -2,6 +2,7 @@ package organize
 
 import (
 	"fastcom/common"
+	"fmt"
 	"github.com/astaxie/beego/orm"
 	"time"
 )
@@ -29,6 +30,7 @@ func HistoryMessage(uuid int,theType int,page int,pageSize int) (interface{},err
 
 	_, err := o.Raw("SELECT DISTINCT type_id from status where organize_uuid=? AND type=? order by create_time desc limit ?,?", uuid,theType, pageRes, pageSize).QueryRows(&typeIds)
 	if err != nil {
+		fmt.Println("11111111")
 		return nil, err
 	}
 
@@ -39,10 +41,12 @@ func HistoryMessage(uuid int,theType int,page int,pageSize int) (interface{},err
 		if theType == 1 { // 公告
 			err = o.Raw("SELECT notice.title as title,notice.create_time as show_time from notice where id=?", id).QueryRow(&requestMessageMenu)
 			if err != nil {
+				fmt.Println("2222222")
 				return nil, err
 			}
 			err := o.Raw("SELECT member.name as create_user FROM notice JOIN member ON notice.create_user=member.openid WHERE notice.id=? AND member.organize_uuid=notice.organize_uuid",id).QueryRow(&createUser)
 			if err != nil {
+				fmt.Println("3333333333")
 				return nil, err
 			}
 		} else if theType == 2 { // 投票
