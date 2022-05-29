@@ -10,7 +10,7 @@ func DissolutionOrganize(uuid int) (bool,error) {
 	if err != nil {
 		return false, err
 	}
-	_,err = o.Raw("UPDATE member SET is_del=2,del_time=now() where organize_uuid=?",uuid).Exec()
+	_,err = o.Raw("UPDATE member SET is_del=2 where organize_uuid=?",uuid).Exec()
 	if err != nil {
 		return false, err
 	}
