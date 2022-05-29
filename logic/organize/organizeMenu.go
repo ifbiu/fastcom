@@ -22,14 +22,14 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 	organizeAll := []models.Organize{}
 	var err error
 	if status == "admin" {
-		_,err = o.Raw("SELECT organize_uuid FROM member WHERE openid =? and authority in (1,2) order by id desc", openId).QueryRows(&organizeIdAll)
+		_,err = o.Raw("SELECT organize_uuid FROM member WHERE openid =? and authority in (1,2) and is_del=1 order by id desc", openId).QueryRows(&organizeIdAll)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	if status == "member" {
-		_,err = o.Raw("SELECT organize_uuid FROM member WHERE openid =? and authority = 3 order by id desc", openId).QueryRows(&organizeIdAll)
+		_,err = o.Raw("SELECT organize_uuid FROM member WHERE openid =? and authority = 3 and is_del=1 order by id desc", openId).QueryRows(&organizeIdAll)
 		if err != nil {
 			return nil, err
 		}
