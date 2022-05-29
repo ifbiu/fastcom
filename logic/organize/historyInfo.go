@@ -34,7 +34,6 @@ type voteOutput1 struct {
 	MaxNum int `json:"maxNum"`
 	VoteNum int `json:"voteNum"`
 	IsVoteNum int `json:"isVoteNum"`
-	IsAbstained int `json:"isAbstained"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
@@ -145,7 +144,7 @@ func GetHistoryInfo(theType int,typeId int) (interface{},error) {
 		if isEnd==1 {
 			voteRes := voteResponse{}
 			var voteNotEndTrueContent []string
-			err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time,vote.max_num as max_num,vote.is_abstained as is_abstained FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+			err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time,vote.max_num as max_num FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 			if err != nil {
 				return nil, err
 			}
@@ -161,7 +160,6 @@ func GetHistoryInfo(theType int,typeId int) (interface{},error) {
 			voteOut.Content = voteNotEndTrueContent
 			voteOut.OrganizeName = voteRes.OrganizeName
 			voteOut.CreateUser = voteRes.CreateUser
-			voteOut.IsAbstained = voteRes.IsAbstained
 			voteOut.MaxNum = voteRes.MaxNum
 			voteOut.CreateTime =voteRes.CreateTime.Format("2006年01月02日 15:04")
 			voteOut.EndTime =voteRes.EndTime.Format("2006年01月02日 15:04")
