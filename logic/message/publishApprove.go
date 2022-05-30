@@ -31,19 +31,33 @@ func SelectApproveOpenIds(uuid string)([]string,error){
 
 func PublishApprove(openid string,openids []string,uuid string) (bool,error) {
 	o := orm.NewOrm()
+	_ = o.Begin()
+	haveId := 0
+	_ = o.Raw("SELECT id from member FROM organize_uuid=? AND openid=? AND is_del=2",uuid,openid).QueryRow(&haveId)
+	if haveId!=0 {
+		_, err := o.Raw("DELETE FROM member WHERE id=?",haveId).Exec()
+		if err != nil {
+			_ = o.Rollback()
+			return false, err
+		}
+	}
 	exec, err := o.Raw("INSERT INTO approve (organize_uuid,start_user,create_time) VALUES (?,?,now())",uuid,openid).Exec()
 	if err != nil {
+		_ = o.Rollback()
 		return false, err
 	}
 	id, err := exec.LastInsertId()
 	if err != nil {
+		_ = o.Rollback()
 		return false, err
 	}
 	for _, opid := range openids {
 		_, err := o.Raw("INSERT INTO status (openid,organize_uuid,type,type_id,is_read,create_time) VALUES (?,?,?,?,?,now())",opid,uuid,3,id,1).Exec()
 		if err != nil {
+			_ = o.Rollback()
 			return false, err
 		}
 	}
+	_ = o.Commit()
 	return true,nil
 }
