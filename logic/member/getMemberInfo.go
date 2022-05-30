@@ -35,15 +35,15 @@ func GetMemberInfo(authOrganize interface{},uuid int,openId string) (interface{}
 	if authOrganize == 3 {
 		var users memberInfo1
 		var Data3,Data2,Data1 []responseData1
-		_,err := o.Raw("select member.openid as openid,image,name from member join user on member.openid = user.openid where authority=1 and organize_uuid=?",uuid).QueryRows(&Data1)
+		_,err := o.Raw("select member.openid as openid,image,name from member join user on member.openid = user.openid where authority=1 and organize_uuid=? and member.is_del=1",uuid).QueryRows(&Data1)
 		if err != nil {
 			return nil,err
 		}
-		_,err = o.Raw("select member.openid as openid,image,name from member join user on member.openid = user.openid where authority=2 and organize_uuid=?",uuid).QueryRows(&Data2)
+		_,err = o.Raw("select member.openid as openid,image,name from member join user on member.openid = user.openid where authority=2 and organize_uuid=? and member.is_del=1",uuid).QueryRows(&Data2)
 		if err != nil {
 			return nil,err
 		}
-		_,err = o.Raw("select member.openid as openid,image,name from member join user on member.openid = user.openid where authority=3 and organize_uuid=?",uuid).QueryRows(&Data3)
+		_,err = o.Raw("select member.openid as openid,image,name from member join user on member.openid = user.openid where authority=3 and organize_uuid=? and member.is_del=1",uuid).QueryRows(&Data3)
 		if err != nil {
 			return nil,err
 		}

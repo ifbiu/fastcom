@@ -9,18 +9,18 @@ func IsMaxOrganize(uuid int,openid string) (bool,bool,error) {
 	var uuidCount int
 	var maximum int
 	var isHave int
-	err := o.Raw("SElECT count(id) from member where openid = ? and organize_uuid = ?", openid,uuid).QueryRow(&isHave)
+	err := o.Raw("SElECT count(id) from member where openid = ? and organize_uuid = ? and is_del = 1", openid,uuid).QueryRow(&isHave)
 	if err != nil {
 		return false,false,err
 	}
 	if isHave != 0 {
 		return false,false,err
 	}
-	err = o.Raw("SElECT maximum from organize where uuid = ?", uuid).QueryRow(&maximum)
+	err = o.Raw("SElECT maximum from organize where uuid = ? and is_del = 1", uuid).QueryRow(&maximum)
 	if err != nil {
 		return false,false,err
 	}
-	err = o.Raw("SElECT count(id) from member where organize_uuid = ?", uuid).QueryRow(&uuidCount)
+	err = o.Raw("SElECT count(id) from member where organize_uuid = ?  and is_del = 1", uuid).QueryRow(&uuidCount)
 	if err != nil {
 		return false,false,err
 	}
