@@ -40,6 +40,11 @@ func (this *SearchOrganizeController) Get()  {
 		this.ServeJSON()
 		return
 	}
+	if isSearchStr!="1" && isSearchStr!="2"{
+		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "isSearch 参数有误！"}
+		this.ServeJSON()
+		return
+	}
 	// 走搜索 存搜索记录
 	if isSearchStr=="1" {
 		key := "searchOrganize:"+openId
