@@ -47,7 +47,7 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 			wen += ",?"
 		}
 	}
-	_,err = o.Raw("SELECT * FROM organize WHERE uuid in ("+wen+") order by create_time desc", organizeIdAll).QueryRows(&organizeAll)
+	_,err = o.Raw("SELECT * FROM organize WHERE uuid in ("+wen+")  and is_del=1 order by create_time desc", organizeIdAll).QueryRows(&organizeAll)
 	if err != nil {
 		return nil, err
 	}
@@ -56,15 +56,15 @@ func GetMenu(openId string,status string) ([]OrganizeMenu,error) {
 		var adminIds int
 		var memberIds int
 		var superAdminName string
-		err := o.Raw("SElECT count(id) from member where organize_uuid = ? and authority in (1,2)", organize.Uuid).QueryRow(&adminIds)
+		err := o.Raw("SElECT count(id) from member where organize_uuid = ? and authority in (1,2)  and is_del=1", organize.Uuid).QueryRow(&adminIds)
 		if err != nil {
 			return nil, err
 		}
-		err = o.Raw("SElECT count(id) from member where organize_uuid = ? and authority = 3", organize.Uuid).QueryRow(&memberIds)
+		err = o.Raw("SElECT count(id) from member where organize_uuid = ? and authority = 3  and is_del=1", organize.Uuid).QueryRow(&memberIds)
 		if err != nil {
 			return nil, err
 		}
-		err = o.Raw("SElECT name from member where organize_uuid = ? and authority = 1", organize.Uuid).QueryRow(&superAdminName)
+		err = o.Raw("SElECT name from member where organize_uuid = ? and authority = 1  and is_del=1", organize.Uuid).QueryRow(&superAdminName)
 		if err != nil {
 			return nil, err
 		}
