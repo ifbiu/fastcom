@@ -28,19 +28,19 @@ func SearchOrganize(uuid int) (SearchOrganizeAll,error) {
 	var memberIds int
 	var superAdmin SuperAdmin
 
-	err := o.Raw("SELECT * FROM organize WHERE uuid = ? order by create_time desc", uuid).QueryRow(&searchOrganizeAll)
+	err := o.Raw("SELECT * FROM organize WHERE uuid = ? and is_del = 1 order by create_time desc", uuid).QueryRow(&searchOrganizeAll)
 	if err != nil {
 		return SearchOrganizeAll{}, err
 	}
-	err = o.Raw("SElECT count(id) from member where organize_uuid = ? and authority in (1,2)", uuid).QueryRow(&adminIds)
+	err = o.Raw("SElECT count(id) from member where organize_uuid = ? and authority in (1,2) and is_del=1", uuid).QueryRow(&adminIds)
 	if err != nil {
 		return SearchOrganizeAll{}, err
 	}
-	err = o.Raw("SElECT count(id) from member where organize_uuid = ? and authority = 3", uuid).QueryRow(&memberIds)
+	err = o.Raw("SElECT count(id) from member where organize_uuid = ? and authority = 3  and is_del = 1", uuid).QueryRow(&memberIds)
 	if err != nil {
 		return SearchOrganizeAll{}, err
 	}
-	err = o.Raw("SElECT member.name as name,user.image as image from member join user on member.openid = user.openid where organize_uuid = ? and authority = 1", uuid).QueryRow(&superAdmin)
+	err = o.Raw("SElECT member.name as name,user.image as image from member join user on member.openid = user.openid where organize_uuid = ? and authority = 1  and member.is_del = 1", uuid).QueryRow(&superAdmin)
 	if err != nil {
 		return SearchOrganizeAll{}, err
 	}
