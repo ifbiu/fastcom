@@ -24,7 +24,8 @@ type RequestSearchOrganize struct {
 func (this *SearchOrganizeController) Get()  {
 	openId := this.GetString("openid")
 	uuidStr := this.GetString("uuid")
-	if openId == "" || uuidStr == "" {
+	isSearchStr := this.GetString("isSearch")
+	if openId == "" || uuidStr == "" || isSearchStr == "" {
 		msg := ""
 		if openId == "" {
 			msg += "openid "
@@ -32,25 +33,31 @@ func (this *SearchOrganizeController) Get()  {
 		if uuidStr == "" {
 			msg += "uuid "
 		}
+		if isSearchStr == "" {
+			msg += "isSearch "
+		}
 		this.Data["json"] = utils.ResultUtil{Code: 500,Msg: "缺少字段："+msg}
 		this.ServeJSON()
 		return
 	}
-	key := "searchOrganize:"+openId
-	rds,err := db.InitRedis()
-	defer rds.Close()
-	if err != nil {
-		log.Panicln(err)
-	}
-	_, err = rds.ZIncrBy(key, 1,uuidStr)
-	if err != nil {
-		result := utils.ResultUtil{
-			Code: 500,
-			Msg: "服务异常！",
+	// 走搜索 存搜索记录
+	if isSearchStr=="1" {
+		key := "searchOrganize:"+openId
+		rds,err := db.InitRedis()
+		defer rds.Close()
+		if err != nil {
+			log.Panicln(err)
 		}
-		this.Data["json"] = &result
-		this.ServeJSON()
-		return
+		_, err = rds.ZIncrBy(key, 1,uuidStr)
+		if err != nil {
+			result := utils.ResultUtil{
+				Code: 500,
+				Msg: "服务异常！",
+			}
+			this.Data["json"] = &result
+			this.ServeJSON()
+			return
+		}
 	}
 	uuid, err := strconv.Atoi(uuidStr)
 	if err != nil {
