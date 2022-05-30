@@ -4,7 +4,7 @@ import "github.com/astaxie/beego/orm"
 
 func DeleteMember(uuid int,delOpenId string) (bool,error) {
 	o := orm.NewOrm()
-	r1,err := o.Raw("delete from member where organize_uuid=? and openid=?",uuid,delOpenId).Exec()
+	r1,err := o.Raw("UPDATE member SET is_del=2 where organize_uuid=? and openid=?",uuid,delOpenId).Exec()
 	if err != nil {
 		return false, err
 	}
