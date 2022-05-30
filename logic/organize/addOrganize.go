@@ -15,7 +15,7 @@ func GenerateUuid() (string,error) {
 	o := orm.NewOrm()
 	res1 := fmt.Sprintf("%06v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
 	res2 := fmt.Sprintf("%06v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
-	resStr = res1+res2[:4]
+	resStr = "1"+res1+res2[:3]
 	_, err := o.Raw("SELECT uuid FROM organize").QueryRows(&uuids)
 	if err != nil {
 		return "",err
