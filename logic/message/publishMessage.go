@@ -9,7 +9,7 @@ func SelectOpenIds(uuid string)([]string,error){
 
 	var openids []string
 	o := orm.NewOrm()
-	_,err := o.Raw("SELECT openid from member where organize_uuid = ?", uuid).QueryRows(&openids)
+	_,err := o.Raw("SELECT openid from member where organize_uuid = ? and is_del=1", uuid).QueryRows(&openids)
 	if err != nil {
 		return openids,err
 	}

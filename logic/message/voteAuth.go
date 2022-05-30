@@ -10,7 +10,7 @@ func IsAuthVote(openId string,typeId int) (int,error)  {
 	if err != nil {
 		return 0,err
 	}
-	err = o.Raw("SELECT authority FROM member WHERE organize_uuid=? AND openid=?",uuid, openId).QueryRow(&authority)
+	err = o.Raw("SELECT authority FROM member WHERE organize_uuid=? AND openid=? and is_del=1",uuid, openId).QueryRow(&authority)
 	if err != nil {
 		return 0,err
 	}
