@@ -10,6 +10,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	"log"
 	"strconv"
+	"time"
 )
 
 type SearchOrganizeController struct {
@@ -53,7 +54,18 @@ func (this *SearchOrganizeController) Get()  {
 		if err != nil {
 			log.Panicln(err)
 		}
-		_, err = rds.ZIncrBy(key, 1,uuidStr)
+
+		_,err = rds.ZRem(key,uuidStr)
+		if err != nil {
+			result := utils.ResultUtil{
+				Code: 500,
+				Msg: "服务异常！",
+			}
+			this.Data["json"] = &result
+			this.ServeJSON()
+			return
+		}
+		_, err = rds.ZIncrBy(key, float64(time.Now().Unix()),uuidStr)
 		if err != nil {
 			result := utils.ResultUtil{
 				Code: 500,

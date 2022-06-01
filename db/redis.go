@@ -76,6 +76,12 @@ func (this *RedisClient) LRangeAll(key string) ([]string, error) {
 	return ret, err
 }
 
+// ZRem
+func (this *RedisClient) ZRem(key string,member string) (int64, error) {
+	result, err := this.c.ZRem(key, member).Result()
+	return result, err
+}
+
 // ZIncrBy
 func (this *RedisClient) ZIncrBy(key string,increment float64,member string) (float64, error) {
 	result, err := this.c.ZIncrBy(key, increment, member).Result()
@@ -86,6 +92,14 @@ func (this *RedisClient) ZIncrBy(key string,increment float64,member string) (fl
 func (this *RedisClient) ZRevRange(key string,start int64, stop int64) ([]string, error) {
 	result, err := this.c.ZRevRange(key, start, stop).Result()
 	return result, err
+}
+
+func (this *RedisClient) ZRevRangeWithScores(key string,start int64, stop int64) ([]redis.Z, error) {
+	zAll ,err := this.c.ZRevRangeWithScores(key, start, stop).Result()
+	if err != nil {
+		return nil, err
+	}
+	return zAll, err
 }
 
 // Exists方法封装
