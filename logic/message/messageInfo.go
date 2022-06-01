@@ -462,6 +462,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		}
 		outOrganizeOut.OrganizeName = outOrganizeRes.OrganizeName
 		outOrganizeOut.DelTime = outOrganizeRes.DelTime.Format("2006年01月02日 15:04")
+		return outOrganizeOut,nil
 	}else if theType ==7 { // 被踢出组织
 		outOrganizeRes := OutOrganizeResponse2{}
 		outOrganizeOut := OutOrganizeOutput2{}
@@ -477,6 +478,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		outOrganizeOut.DelAdmin = delAdmin
 		outOrganizeOut.OrganizeName = outOrganizeRes.OrganizeName
 		outOrganizeOut.DelTime = outOrganizeRes.DelTime.Format("2006年01月02日 15:04")
+		return outOrganizeOut,nil
 	}else if theType ==8 { // 组织解散
 		outOrganizeRes := OutOrganizeResponse2{}
 		outOrganizeOut := OutOrganizeOutput2{}
@@ -492,6 +494,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		outOrganizeOut.DelAdmin = delAdmin
 		outOrganizeOut.OrganizeName = outOrganizeRes.OrganizeName
 		outOrganizeOut.DelTime = outOrganizeRes.DelTime.Format("2006年01月02日 15:04")
+		return outOrganizeOut,nil
 	}
 
 	return []string{},nil
