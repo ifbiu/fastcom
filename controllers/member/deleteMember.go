@@ -106,7 +106,7 @@ func (this *DeleteMemberController) Get()  {
 		return
 	}
 
-	deleteMember, err := member.DeleteMember(uuid,delOpenId)
+	deleteMember, err := member.DeleteMember(uuid,openId,delOpenId)
 	if err != nil || !deleteMember{
 		fmt.Println(err)
 		result := utils.ResultUtil{

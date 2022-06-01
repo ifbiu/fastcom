@@ -2,9 +2,9 @@ package member
 
 import "github.com/astaxie/beego/orm"
 
-func DeleteMember(uuid int,delOpenId string) (bool,error) {
+func DeleteMember(uuid int,openId,delOpenId string) (bool,error) {
 	o := orm.NewOrm()
-	r1,err := o.Raw("UPDATE member SET is_del=2 where organize_uuid=? and openid=?",uuid,delOpenId).Exec()
+	r1,err := o.Raw("UPDATE member SET is_del=3,del_admin=?,del_time=now() where organize_uuid=? and openid=?",openId,uuid,delOpenId).Exec()
 	if err != nil {
 		return false, err
 	}

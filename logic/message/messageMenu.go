@@ -25,7 +25,7 @@ type ResponseMessageMenu struct {
 	Type int `json:"type"`
 	TypeId int `json:"typeId"`
 	IsRead int `json:"isRead"`
-	IsOutOrganize bool `json:"isOutOrganize"`
+	IsOutOrganize int `json:"isOutOrganize"`
 	IsOrganizeDel int `json:"isOrganizeDel"`
 	ShowTime  string`json:"showTime"`
 
@@ -88,12 +88,11 @@ func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 		if err != nil {
 			return nil, err
 		}
-		_, err = organize.GetAuthOrganize(openId, uuid)
-		if err != nil {
-			responseMessageMenu[i].IsOutOrganize = true
-		}else{
-			responseMessageMenu[i].IsOutOrganize = false
+		isDel, err := organize.GetIsDelOrganize(openId, uuid)
+		if err != nil{
+			return nil, err
 		}
+		responseMessageMenu[i].IsOutOrganize = isDel
 		responseMessageMenu[i].OrganizeName = requestMessageMenu.OrganizeName
 		responseMessageMenu[i].Type = requestMessageMenu.Type
 		responseMessageMenu[i].TypeId = requestMessageMenu.TypeId
