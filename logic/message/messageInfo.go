@@ -456,7 +456,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 	}else if theType ==6 { // 自己退出组织
 		outOrganizeRes := OutOrganizeResponse1{}
 		outOrganizeOut := OutOrganizeOutput1{}
-		err := o.Raw("SELECT member.del_time as del_time, organize.organize_name as organize_name FROM member JOIN organize ON member.organize_uuid = organize.uuid WHERE id=?",typeId).QueryRow(&outOrganizeRes)
+		err := o.Raw("SELECT member.del_time as del_time, organize.organize_name as organize_name FROM member JOIN organize ON member.organize_uuid = organize.uuid WHERE member.id=?",typeId).QueryRow(&outOrganizeRes)
 		if err != nil {
 			return nil, err
 		}
@@ -466,7 +466,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		outOrganizeRes := OutOrganizeResponse2{}
 		outOrganizeOut := OutOrganizeOutput2{}
 		var delAdmin string
-		err := o.Raw("SELECT member.del_time as del_time, organize.organize_name as organize_name,member.del_admin as del_admin,organize.uuid as uuid FROM member JOIN organize ON member.organize_uuid = organize.uuid WHERE id=?",typeId).QueryRow(&outOrganizeRes)
+		err := o.Raw("SELECT member.del_time as del_time, organize.organize_name as organize_name,member.del_admin as del_admin,organize.uuid as uuid FROM member JOIN organize ON member.organize_uuid = organize.uuid WHERE member.id=?",typeId).QueryRow(&outOrganizeRes)
 		if err != nil {
 			return nil, err
 		}
