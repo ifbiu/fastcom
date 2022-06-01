@@ -139,6 +139,29 @@ type voteResultFull struct {
 	PercentageNum float64 `json:"percentageNum"`
 }
 
+type OutOrganizeResponse1 struct {
+	DelTime time.Time `json:"delTime"`
+	OrganizeName string `json:"organizeName"`
+}
+
+type OutOrganizeOutput1 struct {
+	DelTime string `json:"delTime"`
+	OrganizeName string `json:"organizeName"`
+}
+
+type OutOrganizeResponse2 struct {
+	DelTime time.Time `json:"delTime"`
+	OrganizeName string `json:"organizeName"`
+	DelAdmin string `json:"delAdmin"`
+	Uuid int `json:"uuid"`
+}
+
+type OutOrganizeOutput2 struct {
+	DelTime string `json:"delTime"`
+	OrganizeName string `json:"organizeName"`
+	DelAdmin string `json:"delAdmin"`
+}
+
 func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 	o := orm.NewOrm()
 	delId := 0
@@ -430,6 +453,45 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		approveOut.ApproveUser = approveUser
 		approveOut.OrganizeName = approveRes.OrganizeName
 		return approveOut,nil
+	}else if theType ==6 { // 自己退出组织
+		outOrganizeRes := OutOrganizeResponse1{}
+		outOrganizeOut := OutOrganizeOutput1{}
+		err := o.Raw("SELECT member.del_time as del_time, organize.organize_name as organize_name FROM member JOIN organize ON member.organize_uuid = organize.uuid WHERE id=?",typeId).QueryRow(&outOrganizeRes)
+		if err != nil {
+			return nil, err
+		}
+		outOrganizeOut.OrganizeName = outOrganizeRes.OrganizeName
+		outOrganizeOut.DelTime = outOrganizeRes.DelTime.Format("2006年01月02日 15:04")
+	}else if theType ==7 { // 被踢出组织
+		outOrganizeRes := OutOrganizeResponse2{}
+		outOrganizeOut := OutOrganizeOutput2{}
+		var delAdmin string
+		err := o.Raw("SELECT member.del_time as del_time, organize.organize_name as organize_name,member.del_admin as del_admin,organize.uuid as uuid FROM member JOIN organize ON member.organize_uuid = organize.uuid WHERE id=?",typeId).QueryRow(&outOrganizeRes)
+		if err != nil {
+			return nil, err
+		}
+		err = o.Raw("SELECT name FROM member WHERE openid=? AND organize_uuid=?", outOrganizeRes.OrganizeName, outOrganizeRes.Uuid).QueryRow(&delAdmin)
+		if err != nil {
+			return nil, err
+		}
+		outOrganizeOut.DelAdmin = delAdmin
+		outOrganizeOut.OrganizeName = outOrganizeRes.OrganizeName
+		outOrganizeOut.DelTime = outOrganizeRes.DelTime.Format("2006年01月02日 15:04")
+	}else if theType ==8 { // 组织解散
+		outOrganizeRes := OutOrganizeResponse2{}
+		outOrganizeOut := OutOrganizeOutput2{}
+		var delAdmin string
+		err := o.Raw("SELECT del_time, organize_name, uuid FROM organize WHERE id=?",typeId).QueryRow(&outOrganizeRes)
+		if err != nil {
+			return nil, err
+		}
+		err = o.Raw("SELECT name FROM member WHERE organize_uuid=? AND authority=1", outOrganizeRes.Uuid).QueryRow(&delAdmin)
+		if err != nil {
+			return nil, err
+		}
+		outOrganizeOut.DelAdmin = delAdmin
+		outOrganizeOut.OrganizeName = outOrganizeRes.OrganizeName
+		outOrganizeOut.DelTime = outOrganizeRes.DelTime.Format("2006年01月02日 15:04")
 	}
 
 	return []string{},nil

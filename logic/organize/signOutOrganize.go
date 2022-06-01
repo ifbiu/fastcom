@@ -10,15 +10,17 @@ func SignOutOrganize(openId string,uuid int) (bool,error) {
 		_ = o.Rollback()
 		return false, err
 	}
-	organizeId, err := r1.RowsAffected()
+	memberId, err := r1.RowsAffected()
 	if err != nil {
 		_ = o.Rollback()
 		return false, err
 	}
-	if organizeId == 0 {
+	_, err = o.Raw("INSERT INTO status (openid,organize_uuid,type,type_id,is_read,create_time) VALUES (?,?,?,?,?,now())",openId,uuid,6,memberId,1).Exec()
+	if err != nil {
 		_ = o.Rollback()
 		return false, err
 	}
+
 	_ = o.Commit()
 	return true, nil
 }

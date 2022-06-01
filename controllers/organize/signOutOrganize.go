@@ -84,6 +84,20 @@ func (this *SignOutOrganizeController) Get()  {
 		return
 	}
 
+	var openIds []string
+	openIds = append(openIds,openId)
+	err = common.AmqpMessage(openIds)
+	if err != nil {
+		fmt.Println(err)
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "消息推送失败！",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}
+
 	result := utils.ResultUtil{
 		Code: 200,
 		Msg: "退出成功",

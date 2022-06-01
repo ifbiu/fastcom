@@ -8,11 +8,13 @@ func DeleteMember(uuid int,openId,delOpenId string) (bool,error) {
 	if err != nil {
 		return false, err
 	}
-	organizeId, err := r1.RowsAffected()
+	memberId, err := r1.RowsAffected()
 	if err != nil {
 		return false, err
 	}
-	if organizeId == 0 {
+	_, err = o.Raw("INSERT INTO status (openid,organize_uuid,type,type_id,is_read,create_time) VALUES (?,?,?,?,?,now())",delOpenId,uuid,7,memberId,1).Exec()
+	if err != nil {
+		_ = o.Rollback()
 		return false, err
 	}
 	return true, nil

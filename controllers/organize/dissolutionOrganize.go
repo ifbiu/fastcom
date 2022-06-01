@@ -84,6 +84,30 @@ func (this *DissolutionOrganizeController) Get()  {
 		return
 	}
 
+	var openIds []string
+	openIds, err = organize.GetOrganizeOpenIds(uuid)
+	if err != nil {
+		fmt.Println(err)
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "获取消息推送人失败！",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}
+	err = common.AmqpMessage(openIds)
+	if err != nil {
+		fmt.Println(err)
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "消息推送失败！",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}
+
 	result := utils.ResultUtil{
 		Code: 200,
 		Msg: "解散成功",

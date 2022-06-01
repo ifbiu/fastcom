@@ -83,6 +83,24 @@ func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 				return nil,err
 			}
 			responseMessageMenu[i].Title = "加入组织审核结果"
+		}else if message.Type==6 { // 自己退出组织
+			err = o.Raw("SELECT organize.uuid as organize_uuid,organize.organize_name as organize_name,status.type as type,status.type_id as type_id,status.is_read as is_read,member.del_time as show_time,organize.is_del as is_organize_del from status left join member on status.type_id = member.id left join organize on status.organize_uuid=organize.uuid where status.id=?",message.Id).QueryRow(&requestMessageMenu)
+			if err != nil {
+				return nil,err
+			}
+			responseMessageMenu[i].Title = "退出组织成功"
+		}else if message.Type==7 { // 被踢出组织
+			err = o.Raw("SELECT organize.uuid as organize_uuid,organize.organize_name as organize_name,status.type as type,status.type_id as type_id,status.is_read as is_read,member.del_time as show_time,organize.is_del as is_organize_del from status left join member on status.type_id = member.id left join organize on status.organize_uuid=organize.uuid where status.id=?",message.Id).QueryRow(&requestMessageMenu)
+			if err != nil {
+				return nil,err
+			}
+			responseMessageMenu[i].Title = "您已被移出组织"
+		}else if message.Type==8 { // 组织解散
+			err = o.Raw("SELECT organize.uuid as organize_uuid,organize.organize_name as organize_name,status.type as type,status.type_id as type_id,status.is_read as is_read,organize.del_time as show_time,organize.is_del as is_organize_del from status left join organize on status.organize_uuid=organize.uuid where status.id=?",message.Id).QueryRow(&requestMessageMenu)
+			if err != nil {
+				return nil,err
+			}
+			responseMessageMenu[i].Title = "组织解散通知"
 		}
 		uuid, err := strconv.Atoi(requestMessageMenu.OrganizeUuid)
 		if err != nil {

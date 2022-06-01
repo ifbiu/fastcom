@@ -118,6 +118,20 @@ func (this *DeleteMemberController) Get()  {
 		return
 	}
 
+	var openIds []string
+	openIds = append(openIds,delOpenId)
+	err = common.AmqpMessage(openIds)
+	if err != nil {
+		fmt.Println(err)
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "消息推送失败！",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}
+
 	result := utils.ResultUtil{
 		Code: 200,
 		Msg: "删除成员成功",
