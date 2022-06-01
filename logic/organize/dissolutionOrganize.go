@@ -1,6 +1,7 @@
 package organize
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -20,16 +21,17 @@ func DissolutionOrganize(uuid int) (bool,error) {
 	if err != nil {
 		return false, err
 	}
-	memberId, err := r1.LastInsertId()
+	organizeId, err := r1.LastInsertId()
 	if err != nil {
 		return false, err
 	}
+	fmt.Println(organizeId)
 	openIds, err := GetOrganizeOpenIds(uuid)
 	if err != nil {
 		return false, err
 	}
 	for _, openId := range openIds {
-		_, err = o.Raw("INSERT INTO status (openid,organize_uuid,type,type_id,is_read,create_time) VALUES (?,?,?,?,?,now())",openId,uuid,8,memberId,1).Exec()
+		_, err = o.Raw("INSERT INTO status (openid,organize_uuid,type,type_id,is_read,create_time) VALUES (?,?,?,?,?,now())",openId,uuid,8,organizeId,1).Exec()
 		if err != nil {
 			_ = o.Rollback()
 			return false, err
