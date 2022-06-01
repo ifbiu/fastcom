@@ -9,7 +9,7 @@ func DeleteMember(uuid int,openId,delOpenId string) (bool,error) {
 		return false, err
 	}
 	var memberId int
-	err = o.Raw("SELECT id FROM member WHERE  organize_uuid=? and openid=?",uuid,openId).QueryRow(&memberId)
+	err = o.Raw("SELECT id FROM member WHERE  organize_uuid=? and openid=?",uuid,delOpenId).QueryRow(&memberId)
 	if err != nil {
 		_ = o.Rollback()
 		return false, err
