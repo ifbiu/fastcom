@@ -1,7 +1,6 @@
 package organize
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -17,15 +16,15 @@ func GetOrganizeOpenIds(uuid int) ([]string,error) {
 
 func DissolutionOrganize(uuid int) (bool,error) {
 	o := orm.NewOrm()
-	r1,err := o.Raw("UPDATE organize SET is_del=2,del_time=now() where uuid=?",uuid).Exec()
+	_,err := o.Raw("UPDATE organize SET is_del=2,del_time=now() where uuid=?",uuid).Exec()
 	if err != nil {
 		return false, err
 	}
-	organizeId, err := r1.LastInsertId()
+	var organizeId int
+	err = o.Raw("SELECT id FROM organize WHERE uuid=?", uuid).QueryRow(&organizeId)
 	if err != nil {
 		return false, err
 	}
-	fmt.Println(organizeId)
 	openIds, err := GetOrganizeOpenIds(uuid)
 	if err != nil {
 		return false, err
