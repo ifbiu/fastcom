@@ -10,7 +10,7 @@ func SignOutOrganize(openId string,uuid int) (bool,error) {
 		_ = o.Rollback()
 		return false, err
 	}
-	memberId, err := r1.RowsAffected()
+	memberId, err := r1.LastInsertId()
 	if err != nil {
 		_ = o.Rollback()
 		return false, err

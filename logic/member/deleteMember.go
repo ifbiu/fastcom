@@ -8,7 +8,7 @@ func DeleteMember(uuid int,openId,delOpenId string) (bool,error) {
 	if err != nil {
 		return false, err
 	}
-	memberId, err := r1.RowsAffected()
+	memberId, err := r1.LastInsertId()
 	if err != nil {
 		return false, err
 	}

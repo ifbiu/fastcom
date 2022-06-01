@@ -20,7 +20,7 @@ func DissolutionOrganize(uuid int) (bool,error) {
 	if err != nil {
 		return false, err
 	}
-	memberId, err := r1.RowsAffected()
+	memberId, err := r1.LastInsertId()
 	if err != nil {
 		return false, err
 	}
