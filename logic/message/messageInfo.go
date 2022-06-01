@@ -471,7 +471,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		if err != nil {
 			return nil, err
 		}
-		err = o.Raw("SELECT name FROM member WHERE openid=? AND organize_uuid=?", outOrganizeRes.OrganizeName, outOrganizeRes.Uuid).QueryRow(&delAdmin)
+		err = o.Raw("SELECT name FROM member WHERE openid=? AND organize_uuid=?", outOrganizeRes.DelAdmin, outOrganizeRes.Uuid).QueryRow(&delAdmin)
 		if err != nil {
 			return nil, err
 		}
