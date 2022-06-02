@@ -4,6 +4,16 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+func IsOrganizeDel(uuid int) (int,error) {
+	o := orm.NewOrm()
+	var isDel int
+	err := o.Raw("SElECT is_del from organize where uuid = ?", uuid).QueryRow(&isDel)
+	if err != nil {
+		return 0,err
+	}
+	return isDel,nil
+}
+
 func IsMaxOrganize(uuid int,openid string) (bool,bool,error) {
 	o := orm.NewOrm()
 	var uuidCount int
