@@ -51,6 +51,27 @@ func (this *GetAuthOrganize) Get()  {
 		return
 	}
 
+	organizeDel, err := organize.IsOrganizeDel(uuid)
+	if err != nil {
+		fmt.Println(err)
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "找不到该组织！",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}
+	if organizeDel == 2 {
+		result := utils.ResultUtil{
+			Code: 500,
+			Msg: "该组织已解散！",
+		}
+		this.Data["json"] = &result
+		this.ServeJSON()
+		return
+	}
+
 	authOrganize, err := organize.GetAuthOrganize(openId,uuid)
 	if err != nil {
 		fmt.Println(err)
