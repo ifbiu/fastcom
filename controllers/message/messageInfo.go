@@ -49,7 +49,7 @@ func (this *MessageInfoController) Get()  {
 		fmt.Println(err)
 		result := utils.ResultUtil{
 			Code: 500,
-			Msg: "type格式错误",
+			Msg: "typeId格式错误",
 		}
 		this.Data["json"] = &result
 		this.ServeJSON()

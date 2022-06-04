@@ -47,7 +47,7 @@ func (this *AdminApproveController) Get()  {
 	if approve != 1 && approve != 2 {
 		result := utils.ResultUtil{
 			Code: 500,
-			Msg: "approve输入有误！",
+			Msg: "抱歉您没有权限！",
 		}
 		this.Data["json"] = &result
 		this.ServeJSON()
