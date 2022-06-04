@@ -32,15 +32,15 @@ func SelectApproveOpenIds(uuid string)([]string,error){
 func PublishApprove(openid string,openids []string,uuid string) (bool,error) {
 	o := orm.NewOrm()
 	_ = o.Begin()
-	haveId := 0
-	_ = o.Raw("SELECT id FROM member WHERE organize_uuid=? AND openid=? AND is_del=2",uuid,openid).QueryRow(&haveId)
-	if haveId!=0 {
-		_, err := o.Raw("DELETE FROM member WHERE id=?",haveId).Exec()
-		if err != nil {
-			_ = o.Rollback()
-			return false, err
-		}
-	}
+	//haveId := 0
+	//_ = o.Raw("SELECT id FROM member WHERE organize_uuid=? AND openid=? AND is_del=2",uuid,openid).QueryRow(&haveId)
+	//if haveId!=0 {
+	//	_, err := o.Raw("DELETE FROM member WHERE id=?",haveId).Exec()
+	//	if err != nil {
+	//		_ = o.Rollback()
+	//		return false, err
+	//	}
+	//}
 	exec, err := o.Raw("INSERT INTO approve (organize_uuid,start_user,create_time) VALUES (?,?,now())",uuid,openid).Exec()
 	if err != nil {
 		_ = o.Rollback()
