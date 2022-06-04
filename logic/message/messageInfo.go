@@ -14,6 +14,7 @@ type delMessageResponse struct {
 type messageResponse struct {
 	Title string `json:"title"`
 	Content string `json:"content"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime time.Time `json:"createTime"`
@@ -21,6 +22,7 @@ type messageResponse struct {
 
 type voteResponse struct {
 	Title string `json:"title"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	IsAbstained int `json:"isAbstained"`
@@ -32,6 +34,7 @@ type voteResponse struct {
 type approveResponse1 struct {
 	Image string `json:"image"`
 	NickName string `json:"nick_name"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organize_name"`
 }
 type approveResponse2 struct {
@@ -39,6 +42,7 @@ type approveResponse2 struct {
 	NickName string `json:"nick_name"`
 	ApproveUser string `json:"approve_user"`
 	IsApprove int `json:"is_approve"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organize_name"`
 }
 
@@ -51,6 +55,7 @@ type voteOutput1 struct {
 	VoteNum int `json:"voteNum"`
 	IsVoteNum int `json:"isVoteNum"`
 	IsAbstained int `json:"isAbstained"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
@@ -62,6 +67,7 @@ type voteOutput2 struct {
 	IsEnd int `json:"isEnd"`
 	VoteNum int `json:"voteNum"`
 	IsVoteNum int `json:"isVoteNum"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
@@ -76,6 +82,7 @@ type voteOutput3 struct {
 	IsVoteNum int `json:"isVoteNum"`
 	ManualUser string `json:"manualUser"`
 	ManualTime string `json:"manualTime"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
@@ -90,6 +97,7 @@ type endManualResponse struct {
 type messageOutput struct {
 	Title string `json:"title"`
 	Content string `json:"content"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	ReadCount int `json:"readCount"`
@@ -99,6 +107,7 @@ type messageOutput struct {
 type approveOutput1 struct {
 	Image string `json:"image"`
 	NickName string `json:"nickName"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 }
 
@@ -107,11 +116,13 @@ type approveOutput2 struct {
 	NickName string `json:"nickName"`
 	ApproveUser string `json:"approveUser"`
 	IsApprove int `json:"isApprove"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 }
 
 type voteResultResponse struct {
 	Title string `json:"title"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime time.Time `json:"createTime"`
@@ -120,6 +131,7 @@ type voteResultResponse struct {
 
 type voteResultOutput struct {
 	Title string `json:"title"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 	CreateUser string `json:"createUser"`
 	CreateTime string `json:"createTime"`
@@ -141,16 +153,19 @@ type voteResultFull struct {
 
 type OutOrganizeResponse1 struct {
 	DelTime time.Time `json:"delTime"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 }
 
 type OutOrganizeOutput1 struct {
 	DelTime string `json:"delTime"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 }
 
 type OutOrganizeResponse2 struct {
 	DelTime time.Time `json:"delTime"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 	DelAdmin string `json:"delAdmin"`
 	Uuid int `json:"uuid"`
@@ -158,6 +173,7 @@ type OutOrganizeResponse2 struct {
 
 type OutOrganizeOutput2 struct {
 	DelTime string `json:"delTime"`
+	OrganizeUuid int `json:"organizeUuid"`
 	OrganizeName string `json:"organizeName"`
 	DelAdmin string `json:"delAdmin"`
 }
@@ -185,13 +201,14 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			return delMessage,nil
 		}
 		messageRes := messageResponse{}
-		err = o.Raw("SELECT title,content,organize.organize_name as organize_name,member.name as create_user,notice.create_time as create_time FROM notice left join organize on notice.organize_uuid = organize.uuid left join member on notice.create_user=member.openid WHERE notice.id=? AND notice.organize_uuid=member.organize_uuid", typeId).QueryRow(&messageRes)
+		err = o.Raw("SELECT title,content,organize.organize_name as organize_name,organize.uuid as organize_uuid,member.name as create_user,notice.create_time as create_time FROM notice left join organize on notice.organize_uuid = organize.uuid left join member on notice.create_user=member.openid WHERE notice.id=? AND notice.organize_uuid=member.organize_uuid", typeId).QueryRow(&messageRes)
 		if err != nil {
 			return nil, err
 		}
 		messageOut := messageOutput{}
 		messageOut.Title = messageRes.Title
 		messageOut.Content = messageRes.Content
+		messageOut.OrganizeUuid = messageRes.OrganizeUuid
 		messageOut.OrganizeName = messageRes.OrganizeName
 		messageOut.CreateUser = messageRes.CreateUser
 		messageOut.ReadCount = readCount
@@ -235,7 +252,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			if countVote == 0 {	// 未投
 				voteRes := voteResponse{}
 				var voteNotEndTrueContent []string
-				err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time,vote.max_num as max_num,vote.is_abstained as is_abstained FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+				err = o.Raw("SELECT title,organize.organize_name as organize_name,organize.uuid as organize_uuid,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time,vote.max_num as max_num,vote.is_abstained as is_abstained FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 				if err != nil {
 					return nil, err
 				}
@@ -250,6 +267,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 				voteOut.VoteNum = voteNum
 				voteOut.IsVoteNum = isVoteNum
 				voteOut.Content = voteNotEndTrueContent
+				voteOut.OrganizeUuid = voteRes.OrganizeUuid
 				voteOut.OrganizeName = voteRes.OrganizeName
 				voteOut.CreateUser = voteRes.CreateUser
 				voteOut.IsAbstained = voteRes.IsAbstained
@@ -259,7 +277,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 				return voteOut,nil
 			}else{	// 已投
 				voteRes := voteResponse{}
-				err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+				err = o.Raw("SELECT title,organize.organize_name as organize_name,organize.uuid as organize_uuid,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 				if err != nil {
 					return nil, err
 				}
@@ -269,6 +287,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 				voteOut.IsEnd = isEnd
 				voteOut.VoteNum = voteNum
 				voteOut.IsVoteNum = isVoteNum
+				voteOut.OrganizeUuid = voteRes.OrganizeUuid
 				voteOut.OrganizeName = voteRes.OrganizeName
 				voteOut.CreateUser = voteRes.CreateUser
 				voteOut.CreateTime =voteRes.CreateTime.Format("2006年01月02日 15:04")
@@ -277,7 +296,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			}
 		}else if isEnd==2 {	// 自动截止
 			voteRes := voteResponse{}
-			err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+			err = o.Raw("SELECT title,organize.organize_name as organize_name,organize.uuid as organize_uuid,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 			if err != nil {
 				return nil, err
 			}
@@ -287,6 +306,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			voteOut.IsEnd = isEnd
 			voteOut.VoteNum = voteNum
 			voteOut.IsVoteNum = isVoteNum
+			voteOut.OrganizeUuid = voteRes.OrganizeUuid
 			voteOut.OrganizeName = voteRes.OrganizeName
 			voteOut.CreateUser = voteRes.CreateUser
 			voteOut.CreateTime =voteRes.CreateTime.Format("2006年01月02日 15:04")
@@ -294,7 +314,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			return voteOut,nil
 		}else if isEnd==3{ // 手动截止
 			voteRes := voteResponse{}
-			err = o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+			err = o.Raw("SELECT title,organize.organize_name as organize_name,organize.uuid as organize_uuid,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 			if err != nil {
 				return nil, err
 			}
@@ -311,6 +331,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			voteOut.IsVoteNum = isVoteNum
 			voteOut.ManualUser = endManualRes.ManualUser
 			voteOut.ManualTime = endManualRes.ManualTime.Format("2006年01月02日 15:04")
+			voteOut.OrganizeUuid = voteRes.OrganizeUuid
 			voteOut.OrganizeName = voteRes.OrganizeName
 			voteOut.CreateUser = voteRes.CreateUser
 			voteOut.CreateTime =voteRes.CreateTime.Format("2006年01月02日 15:04")
@@ -329,18 +350,19 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		if isApprove==0 {
 			approveRes := approveResponse1{}
 			approveOut := approveOutput1{}
-			err = o.Raw("SELECT user.image as image,user.nick_name as nick_name,organize.organize_name as organize_name FROM approve join user on approve.start_user = user.openid join organize on approve.organize_uuid = organize.uuid WHERE approve.id=?", typeId).QueryRow(&approveRes)
+			err = o.Raw("SELECT user.image as image,user.nick_name as nick_name,organize.organize_name as organize_name,organize.uuid as organize_uuid FROM approve join user on approve.start_user = user.openid join organize on approve.organize_uuid = organize.uuid WHERE approve.id=?", typeId).QueryRow(&approveRes)
 			if err != nil {
 				return nil, err
 			}
 			approveOut.Image = approveRes.Image
 			approveOut.NickName = approveRes.NickName
+			approveOut.OrganizeUuid = approveRes.OrganizeUuid
 			approveOut.OrganizeName = approveRes.OrganizeName
 			return approveOut,nil
 		}else if isApprove==1 || isApprove==2 {	// 已审核通过
 			approveRes := approveResponse2{}
 			approveOut := approveOutput2{}
-			err = o.Raw("SELECT user.image as image,user.nick_name as nick_name,organize.organize_name as organize_name,approve.is_approve as is_approve,approve.approve_user as approve_user FROM approve join user on approve.start_user = user.openid join organize on approve.organize_uuid = organize.uuid WHERE approve.id=?", typeId).QueryRow(&approveRes)
+			err = o.Raw("SELECT user.image as image,user.nick_name as nick_name,organize.organize_name as organize_name,organize.uuid as organize_uuid,approve.is_approve as is_approve,approve.approve_user as approve_user FROM approve join user on approve.start_user = user.openid join organize on approve.organize_uuid = organize.uuid WHERE approve.id=?", typeId).QueryRow(&approveRes)
 			if err != nil {
 				return nil, err
 			}
@@ -353,6 +375,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			approveOut.NickName = approveRes.NickName
 			approveOut.ApproveUser = approveUser
 			approveOut.IsApprove = approveRes.IsApprove
+			approveOut.OrganizeUuid = approveRes.OrganizeUuid
 			approveOut.OrganizeName = approveRes.OrganizeName
 			return approveOut,nil
 		}
@@ -364,7 +387,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		var voteNumAArr []string
 		voteRes := voteResultResponse{}
 		voteOut := voteResultOutput{}
-		err := o.Raw("SELECT title,organize.organize_name as organize_name,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
+		err := o.Raw("SELECT title,organize.organize_name as organize_name,organize.uuid as organize_uuid,member.name as create_user,vote.create_time as create_time,vote.end_time as end_time FROM vote left join organize on vote.organize_uuid = organize.uuid left join member on vote.create_user=member.openid WHERE vote.id=? AND vote.organize_uuid=member.organize_uuid", typeId).QueryRow(&voteRes)
 		if err != nil {
 			return nil, err
 		}
@@ -423,6 +446,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			voteResultAll[i] = voteResult
 		}
 		voteOut.Title = voteRes.Title
+		voteOut.OrganizeUuid = voteRes.OrganizeUuid
 		voteOut.OrganizeName = voteRes.OrganizeName
 		voteOut.CreateUser = voteRes.CreateUser
 		voteOut.VoteNumY = voteNumY
@@ -438,7 +462,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 	}else if theType ==5 {
 		approveRes := approveResponse2{}
 		approveOut := approveOutput2{}
-		err = o.Raw("SELECT user.image as image,user.nick_name as nick_name,organize.organize_name as organize_name,approve.is_approve as is_approve,approve.approve_user as approve_user FROM approve join user on approve.start_user = user.openid join organize on approve.organize_uuid = organize.uuid WHERE approve.id=?", typeId).QueryRow(&approveRes)
+		err = o.Raw("SELECT user.image as image,user.nick_name as nick_name,organize.organize_name as organize_name,organize.uuid as organize_uuid,approve.is_approve as is_approve,approve.approve_user as approve_user FROM approve join user on approve.start_user = user.openid join organize on approve.organize_uuid = organize.uuid WHERE approve.id=?", typeId).QueryRow(&approveRes)
 		if err != nil {
 			return nil, err
 		}
@@ -451,15 +475,17 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		approveOut.NickName = approveRes.NickName
 		approveOut.IsApprove = approveRes.IsApprove
 		approveOut.ApproveUser = approveUser
+		approveOut.OrganizeUuid = approveRes.OrganizeUuid
 		approveOut.OrganizeName = approveRes.OrganizeName
 		return approveOut,nil
 	}else if theType ==6 { // 自己退出组织
 		outOrganizeRes := OutOrganizeResponse1{}
 		outOrganizeOut := OutOrganizeOutput1{}
-		err := o.Raw("SELECT member.del_time as del_time, organize.organize_name as organize_name FROM member JOIN organize ON member.organize_uuid = organize.uuid WHERE member.id=?",typeId).QueryRow(&outOrganizeRes)
+		err := o.Raw("SELECT member.del_time as del_time, organize.organize_name as organize_name,organize.uuid as organize_uuid FROM member JOIN organize ON member.organize_uuid = organize.uuid WHERE member.id=?",typeId).QueryRow(&outOrganizeRes)
 		if err != nil {
 			return nil, err
 		}
+		outOrganizeOut.OrganizeUuid = outOrganizeRes.OrganizeUuid
 		outOrganizeOut.OrganizeName = outOrganizeRes.OrganizeName
 		outOrganizeOut.DelTime = outOrganizeRes.DelTime.Format("2006年01月02日 15:04")
 		return outOrganizeOut,nil
@@ -467,7 +493,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 		outOrganizeRes := OutOrganizeResponse2{}
 		outOrganizeOut := OutOrganizeOutput2{}
 		var delAdmin string
-		err := o.Raw("SELECT member.del_time as del_time, organize.organize_name as organize_name,member.del_admin as del_admin,organize.uuid as uuid FROM member JOIN organize ON member.organize_uuid = organize.uuid WHERE member.id=?",typeId).QueryRow(&outOrganizeRes)
+		err := o.Raw("SELECT member.del_time as del_time, organize.organize_name as organize_name,organize.uuid as organize_uuid,member.del_admin as del_admin,organize.uuid as uuid FROM member JOIN organize ON member.organize_uuid = organize.uuid WHERE member.id=?",typeId).QueryRow(&outOrganizeRes)
 		if err != nil {
 			return nil, err
 		}
@@ -476,6 +502,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			return nil, err
 		}
 		outOrganizeOut.DelAdmin = delAdmin
+		outOrganizeOut.OrganizeUuid = outOrganizeRes.OrganizeUuid
 		outOrganizeOut.OrganizeName = outOrganizeRes.OrganizeName
 		outOrganizeOut.DelTime = outOrganizeRes.DelTime.Format("2006年01月02日 15:04")
 		return outOrganizeOut,nil
@@ -492,6 +519,7 @@ func GetMessageInfo(theType int,typeId int,openId string) (interface{},error) {
 			return nil, err
 		}
 		outOrganizeOut.DelAdmin = delAdmin
+		outOrganizeOut.OrganizeUuid = outOrganizeRes.OrganizeUuid
 		outOrganizeOut.OrganizeName = outOrganizeRes.OrganizeName
 		outOrganizeOut.DelTime = outOrganizeRes.DelTime.Format("2006年01月02日 15:04")
 		return outOrganizeOut,nil
