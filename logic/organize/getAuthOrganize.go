@@ -18,7 +18,7 @@ func GetIsDelOrganize(openId string,uuid int) (int,error) {
 	o := orm.NewOrm()
 	var isDel int
 
-	err := o.Raw("select is_del from member where openid=? and organize_uuid=?",openId,uuid).QueryRow(&isDel)
+	err := o.Raw("select is_del from member where openid=? and organize_uuid=? order by id desc limit 1",openId,uuid).QueryRow(&isDel)
 	if err != nil {
 		return 0,err
 	}
