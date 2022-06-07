@@ -108,9 +108,10 @@ func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 		}
 		isDel, err := organize.GetIsDelOrganize(openId, uuid)
 		if err != nil{
-			return nil, err
+			responseMessageMenu[i].IsOutOrganize = 0
+		}else{
+			responseMessageMenu[i].IsOutOrganize = isDel
 		}
-		responseMessageMenu[i].IsOutOrganize = isDel
 		responseMessageMenu[i].OrganizeName = requestMessageMenu.OrganizeName
 		responseMessageMenu[i].Type = requestMessageMenu.Type
 		responseMessageMenu[i].TypeId = requestMessageMenu.TypeId
