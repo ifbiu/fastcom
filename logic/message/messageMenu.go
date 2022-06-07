@@ -35,6 +35,7 @@ type SelectMessage struct {
 	Id int `json:"id"`
 	Type int `json:"type"`
 	TypeId int `json:"typeId"`
+	CreateTime time.Time `json:"createTime"`
 }
 
 func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
@@ -46,7 +47,7 @@ func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 
 
 	selectMessage := []SelectMessage{}
-	_,err := o.Raw("SELECT id,type,type_id from status where openid=? order by create_time desc limit ?,?", openId,pageRes,pageSize).QueryRows(&selectMessage)
+	_,err := o.Raw("SELECT id,type,type_id,create_time from status where openid=? order by create_time desc limit ?,?", openId,pageRes,pageSize).QueryRows(&selectMessage)
 	if err != nil {
 		return nil,err
 	}
@@ -117,7 +118,8 @@ func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 		responseMessageMenu[i].TypeId = requestMessageMenu.TypeId
 		responseMessageMenu[i].IsRead = requestMessageMenu.IsRead
 		responseMessageMenu[i].IsOrganizeDel = requestMessageMenu.IsOrganizeDel
-		responseMessageMenu[i].ShowTime = common.FormatTime(requestMessageMenu.ShowTime)
+		//responseMessageMenu[i].ShowTime = common.FormatTime(requestMessageMenu.ShowTime)
+		responseMessageMenu[i].ShowTime = common.FormatTime(message.CreateTime)
 	}
 	return responseMessageMenu, err
 }
