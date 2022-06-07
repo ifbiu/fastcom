@@ -115,7 +115,7 @@ func GetMessageMenu(openId string,page int,pageSize int) (interface{},error) {
 		}
 		if message.Type==5 {
 			var mmIdAll int
-			err := o.Raw("select count(id) from member where openid=? and organize_uuid=? and is_del=1",openId, uuid ).QueryRow(mmIdAll)
+			err := o.Raw("select count(id) from member where openid=? and organize_uuid=? and is_del=1",openId, uuid ).QueryRow(&mmIdAll)
 			if err != nil {
 				return nil, err
 			}
